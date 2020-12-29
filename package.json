@@ -1,0 +1,11 @@
+{
+  "name": "openshift-observer",
+  "version": "1.0.0",
+  "description": "Observing openshift pods and monitor their traffic",
+  "main": "index.js",
+  "author": "Adam Harnusek",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
