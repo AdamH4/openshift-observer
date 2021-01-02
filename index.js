@@ -2,6 +2,7 @@ var express = require('express')
 const yaml = require('js-yaml')
 var app = express()
 const axios = require('axios')
+const e = require('express')
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -29,11 +30,23 @@ app.get('/', function (req, res) {
  *     description: Return OAS of all pods.
  */
 app.get('/pods', (req,res) => {
-    res.json(filterPodEnvVariables())
+    let envOfPods = filterPodEnvVariables()
+    let oas = []
+    Object.keys(envOfPods).forEach(async(key) => {
+        const document = await getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
+        oas.push({
+            oas: document,
+            [key]: {
+                port: envOfPods[key].port,
+                host: envOfPods[key].host
+            }
+        })
+    })
+    res.json(oas)
 })
 
 function getOASFromPod(url){
-    axios.get(`http://${url}/openapi.yaml`).then(response => {
+    return axios.get(`http://${url}/openapi.yaml`).then(response => {
         return yaml.safeLoad(response.data)
     }).catch(err => {
         console.error(err)
