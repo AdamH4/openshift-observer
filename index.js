@@ -33,7 +33,12 @@ app.get('/pods', (req,res) => {
     let envOfPods = filterPodEnvVariables()
     let oas = []
     Object.keys(envOfPods).forEach(async(key) => {
-        const document = await getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
+        const document;
+        try{
+            document = await getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
+        }catch(err){
+            return
+        }
         oas.push({
             oas: document,
             [key]: {
