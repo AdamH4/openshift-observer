@@ -32,23 +32,23 @@ app.get('/', function (req, res) {
 app.get('/pods', (req,res) => {
     let envOfPods = filterPodEnvVariables()
     let oas = []
-    Object.keys(envOfPods).forEach(async(key) => {
-        let document
-        try{
-            document = await getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
-        }catch(err){
-            return
-        }
+    let documents = []
+    Object.keys(envOfPods).forEach(key => {
+
+        documents.push(getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`))
         oas.push({
-            oas: document,
             [key]: {
                 port: envOfPods[key].port,
                 host: envOfPods[key].host
             }
         })
-        console.log(oas)
     })
-    res.json(oas)
+    Promise.all(documents).then(docs => {
+        for(let [index,doc] of docs){
+            oas[index].specification = doc
+        }
+        res.json(oas)
+    })
 })
 
 async function getOASFromPod(url){
@@ -56,7 +56,7 @@ async function getOASFromPod(url){
     try{
         response = await axios.get(`http://${url}/openapi.yaml`)
     }catch(err){
-        return err
+        return {}
     }
     return yaml.safeLoad(response.data)
 }
