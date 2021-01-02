@@ -48,7 +48,7 @@ app.get('/pods', (req,res) => {
         })
         console.log(oas)
     })
-    res.json(envOfPods)
+    res.json(oas)
 })
 
 async function getOASFromPod(url){
