@@ -46,8 +46,8 @@ app.get('/pods', (req,res) => {
                 host: envOfPods[key].host
             }
         })
+        console.log(oas)
     })
-    console.log(oas)
     res.json(envOfPods)
 })
 
@@ -56,7 +56,7 @@ function getOASFromPod(url){
         return yaml.safeLoad(response.data)
     }).catch(err => {
         console.error(err)
-        return
+        return {}
     })
 }
 
