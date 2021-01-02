@@ -43,11 +43,17 @@ app.get('/pods', (req,res) => {
             }
         })
     })
-    Promise.all(documents).then(docs => {
+    Promise.allSettled(documents).then(docs => {
         for(let [index,doc] of docs){
-            oas[index].specification = doc
+            if(doc.status === 'fulfilled'){
+                oas[index].specification = doc
+            }else{
+                oas[index].specification = {}
+            }
         }
         res.json(oas)
+    }).catch(err => {
+        console.log(err)
     })
 })
 
