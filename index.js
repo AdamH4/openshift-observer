@@ -46,6 +46,7 @@ app.get('/pods', (req,res) => {
     Promise.allSettled(documents).then(docs => {
         let index = 0
         for(let doc of docs){
+            console.log(doc)
             if(doc.status === 'fulfilled'){
                 oas[index][doc.podName].specification = doc.value
             }else{
