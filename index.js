@@ -34,7 +34,6 @@ app.get('/pods', (req,res) => {
     let oas = []
     let documents = []
     Object.keys(envOfPods).forEach(key => {
-
         documents.push(getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`))
         oas.push({
             [key]: {
@@ -44,12 +43,14 @@ app.get('/pods', (req,res) => {
         })
     })
     Promise.allSettled(documents).then(docs => {
-        for(let [index,doc] of docs){
+        let index = 0
+        for(let doc of docs){
             if(doc.status === 'fulfilled'){
                 oas[index].specification = doc
             }else{
                 oas[index].specification = {}
             }
+            index += 1
         }
         res.json(oas)
     }).catch(err => {
