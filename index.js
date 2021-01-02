@@ -47,14 +47,14 @@ function filterPodEnvVariables(){
         const envKey = String(key)
         if(envKey.endsWith("SERVICE_PORT")){
             const keyIndex = envKey.indexOf("SERVICE_PORT")
-            const key = envKey.slice(0,keyIndex)
+            const key = envKey.slice(0,keyIndex - 1)
             if(enviromentOpenshiftVariables[key] === undefined){
                 enviromentOpenshiftVariables[key] = {}
             }
             enviromentOpenshiftVariables[key].port = process.env[envKey]
         }else if(envKey.endsWith("SERVICE_HOST")){
             const keyIndex = envKey.indexOf("SERVICE_HOST")
-            const key = envKey.slice(0,keyIndex)
+            const key = envKey.slice(0,keyIndex - 1)
             if(enviromentOpenshiftVariables[key] === undefined){
                 enviromentOpenshiftVariables[key] = {}
             }
