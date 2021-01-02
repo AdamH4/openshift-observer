@@ -47,9 +47,9 @@ app.get('/pods', (req,res) => {
         let index = 0
         for(let doc of docs){
             if(doc.status === 'fulfilled'){
-                oas[index][doc.value.podName].specification = doc.value
+                oas[index][doc.podName].specification = doc.value
             }else{
-                oas[index][doc.value.podName].specification = {}
+                oas[index][doc.podName].specification = {}
             }
             index += 1
         }
