@@ -2,7 +2,6 @@ var express = require('express')
 const yaml = require('js-yaml')
 var app = express()
 const axios = require('axios')
-const e = require('express')
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -33,29 +32,31 @@ app.get('/pods', (req,res) => {
     let envOfPods = filterPodEnvVariables()
     let oas = []
     let documents = []
-    Object.keys(envOfPods).forEach(key => {
-        documents.push(getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`))
+    Object.keys(envOfPods).forEach(async (key) => {
+        const document = await getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
         oas.push({
             [key]: {
                 port: envOfPods[key].port,
-                host: envOfPods[key].host
+                host: envOfPods[key].host,
+                specification: document
             }
         })
     })
-    Promise.allSettled(documents).then(docs => {
-        let index = 0
-        for(let doc of docs){
-            if(doc.status === 'fulfilled'){
-                oas[index].specification = doc
-            }else{
-                oas[index].specification = {}
-            }
-            index += 1
-        }
-        res.json(oas)
-    }).catch(err => {
-        console.log(err)
-    })
+    res.json(oas)
+    // Promise.allSettled(documents).then(docs => {
+    //     let index = 0
+    //     for(let doc of docs){
+    //         if(doc.status === 'fulfilled'){
+    //             oas[index].specification = doc.value
+    //         }else{
+    //             oas[index].specification = {}
+    //         }
+    //         index += 1
+    //     }
+    //     res.json(oas)
+    // }).catch(err => {
+    //     console.log(err)
+    // })
 })
 
 async function getOASFromPod(url){
