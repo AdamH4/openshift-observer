@@ -32,9 +32,10 @@ app.get('/pods', (req,res) => {
     let envOfPods = filterPodEnvVariables()
     let oas = []
     let documents = []
+    let podNames = []
     Object.keys(envOfPods).forEach(key => {
         const document = getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
-        document.podName = key
+        podNames.podName = key
         documents.push(document)
         oas.push({
             [key]: {
@@ -48,9 +49,9 @@ app.get('/pods', (req,res) => {
         for(let doc of docs){
             console.log(doc)
             if(doc.status === 'fulfilled'){
-                oas[index][doc.podName].specification = doc.value
+                oas[index][podNames[index]].specification = doc.value
             }else{
-                oas[index][doc.podName].specification = {}
+                oas[index][podNames[index]].specification = {}
             }
             index += 1
         }
