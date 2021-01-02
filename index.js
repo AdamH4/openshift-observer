@@ -35,7 +35,7 @@ app.get('/pods', (req,res) => {
     let podNames = []
     Object.keys(envOfPods).forEach(key => {
         const document = getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
-        podNames.podName = key
+        podNames.push(key)
         documents.push(document)
         oas.push({
             [key]: {
