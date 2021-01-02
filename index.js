@@ -1,6 +1,8 @@
 var express = require('express')
+const yaml = require('js-yaml')
 var app = express()
 const axios = require('axios')
+require('dotenv').config()
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -21,28 +23,40 @@ app.get('/', function (req, res) {
 
 
 /*
- * @api [get] /reddit/:subreddit
- * description: Call specific subreddit and return data from it
+ * @api [get] /pods
+ * description: Filter all env variables and return their OAS
  * responses:
  *   200:
- *     description: Data from subreddit.
+ *     description: Return OAS of all pods.
  */
 app.get('/pods', (req,res) => {
     res.json(filterPodEnvVariables())
 })
 
-function filterPodEnvVariables(){
-    let enviromentVariablesOfPods = {}
-    Object.keys(process.env).forEach(key => {
-        if(String(key).includes("SERVICE_PORT") || String(key).includes("SERVICE_HOST")){
-            enviromentVariablesOfPods[key] = process.env[key]
-        }
+function getOASFromPod(url){
+    axios.get(`http://${url}/openapi.yaml`).then(response => {
+        return yaml.safeLoad(response.data)
+    }).catch(err => {
+        console.error(err)
     })
-    return enviromentVariablesOfPods
 }
 
+function filterPodEnvVariables(){
+    let enviromentOpenshiftVariables = {}
+    Object.keys(process.env).forEach(key => {
+        const envKey = String(key)
+        if(envKey.includes("SERVICE_PORT") && !(envKey.includes(process.env.APP_NAME) || envKey.includes("KUBELET"))){
+            enviromentOpenshiftVariables[envKey].port = process.env[envKey]
+        }else if(envKey.includes("SERVICE_HOST") && !(envKey.includes(process.env.APP_NAME) || envKey.includes("KUBELET"))){
+            enviromentOpenshiftVariables[envKey].host = process.env[envKey]
+        }
+    })
+    return enviromentOpenshiftVariables
+}
 
-app.listen(8080, function () {
-   console.log("Example app listening at port 8080")
+const port = process.env.PORT || 8080
+
+app.listen(port, function () {
+   console.log("Example app listening at port " + port)
 })
 
