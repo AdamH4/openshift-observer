@@ -32,31 +32,29 @@ app.get('/pods', (req,res) => {
     let envOfPods = filterPodEnvVariables()
     let oas = []
     let documents = []
-    Object.keys(envOfPods).forEach(async (key) => {
-        const document = await getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
+    Object.keys(envOfPods).forEach(key => {
+        const document = getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
+        document.podName = key
+        documents.push(document)
         oas.push({
             [key]: {
                 port: envOfPods[key].port,
                 host: envOfPods[key].host,
-                specification: document
             }
         })
     })
-    res.json(oas)
-    // Promise.allSettled(documents).then(docs => {
-    //     let index = 0
-    //     for(let doc of docs){
-    //         if(doc.status === 'fulfilled'){
-    //             oas[index].specification = doc.value
-    //         }else{
-    //             oas[index].specification = {}
-    //         }
-    //         index += 1
-    //     }
-    //     res.json(oas)
-    // }).catch(err => {
-    //     console.log(err)
-    // })
+    Promise.allSettled(documents).then(docs => {
+        let index = 0
+        for(let doc of docs){
+            if(doc.status === 'fulfilled'){
+                oas[index][doc.value.podName].specification = doc.value
+            }else{
+                oas[index][doc.value.podName].specification = {}
+            }
+            index += 1
+        }
+        res.json(oas)
+    })
 })
 
 async function getOASFromPod(url){
