@@ -52,12 +52,13 @@ app.get('/pods', (req,res) => {
 })
 
 async function getOASFromPod(url){
-    return await axios.get(`http://${url}/openapi.yaml`).then(response => {
-        return yaml.safeLoad(response.data)
-    }).catch(err => {
-        console.log("Err " + url)
-        throw Error(err)
-    })
+    let response
+    try{
+        response = await axios.get(`http://${url}/openapi.yaml`)
+    }catch(err){
+        return err
+    }
+    return yaml.safeLoad(response.data)
 }
 
 function filterPodEnvVariables(){
