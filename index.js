@@ -2,6 +2,7 @@ var express = require('express')
 const yaml = require('js-yaml')
 var app = express()
 const axios = require('axios')
+app.use(express.static('client/dist'))
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -17,7 +18,7 @@ app.use(function(req, res, next) {
  *     description: Greeting message.
  */
 app.get('/', function (req, res) {
-   res.json({"message" : "Hello GET / route"});
+    res.sendFile(__dirname + '/public/index.html');
 })
 
 
@@ -57,6 +58,7 @@ app.get('/pods', (req,res) => {
         }
         res.json(oas)
     })
+
 })
 
 async function getOASFromPod(url){
