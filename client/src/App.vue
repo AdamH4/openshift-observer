@@ -108,6 +108,7 @@ export default {
 }
 .detail__content{
   padding: 1rem;
+  border-radius: 0 10px 10px 0;
 }
 .detail__content div{
   padding: 1rem;

@@ -65,7 +65,11 @@ async function getOASFromPod(url){
     try{
         response = await axios.get(`http://${url}/openapi.yaml`)
     }catch(err){
-        return {}
+        try {
+            return await axios.get(`http://${url}/openapi.json`)
+        } catch (error) {
+            return {}
+        }
     }
     return yaml.safeLoad(response.data)
 }
