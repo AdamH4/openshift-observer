@@ -63,10 +63,10 @@ app.get('/pods', (req,res) => {
 async function getOASFromPod(url){
     let response
     try{
-        response = await axios.get(`http://${url}/openapi.yaml`)
+        return await axios.get(`http://${url}/openapi.json`)
     }catch(err){
         try {
-            return await axios.get(`http://${url}/openapi.json`)
+            response = await axios.get(`http://${url}/openapi.yaml`)
         } catch (error) {
             return {}
         }
