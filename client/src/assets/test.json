@@ -1,0 +1,98 @@
+[
+	{
+		"NODE_OPENSHIFT_TEST": {
+			"port": "8080",
+			"host": "172.25.190.25",
+			"specification": {
+				"openapi": "3.0.3",
+				"info": {
+					"description": "Testing app for bakalarsky project",
+					"version": "1.0.1",
+					"title": "Openshift node pod"
+				},
+				"paths": {
+					"/": {
+						"get": {
+							"description": "Greeting from server",
+							"responses": {
+								"200": {
+									"description": "Greeting message."
+								}
+							}
+						}
+					},
+					"/service": {
+						"get": {
+							"description": "Call another pod in Openshift cluster(like middleware)",
+							"responses": {
+								"200": {
+									"description": "Response from pod."
+								}
+							}
+						}
+					},
+					"/reddit/:subreddit": {
+						"get": {
+							"description": "Call specific subreddit and return data from it",
+							"responses": {
+								"200": {
+									"description": "Data from subreddit."
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	{
+		"TEST_VUE_OPENSHIFT": {
+			"port": "80",
+			"host": "172.25.33.103",
+			"specification": {}
+		}
+	},
+	{
+		"NODE_3RD_PARTY_APP": {
+			"port": "8080",
+			"host": "172.25.79.208",
+			"specification": {}
+		}
+	},
+	{
+		"OSN_ANIMALS": {
+			"port": "8080",
+			"host": "172.25.151.2",
+			"specification": {
+				"openapi": "3.0.3",
+				"info": {
+					"description": "Testing app for bakalarsky project",
+					"version": "1.0.1",
+					"title": "Openshift node pod"
+				},
+				"paths": {
+					"/": {
+						"get": {
+							"description": "Greeting from server",
+							"responses": {
+								"200": {
+									"description": "Greeting message."
+								}
+							}
+						}
+					},
+					"/animals": {
+						"get": {
+							"description": "Call another pod in Openshift cluster(like middleware)",
+							"responses": {
+								"200": {
+									"description": "Response from pod."
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+]

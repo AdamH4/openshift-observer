@@ -1,7 +1,16 @@
 <template>
     <div class="row__content">
-        <div class="col_content" v-for="(prop,index) in node" :key="index">
-            {{prop}}
+        <div class="col_content">
+            {{node.id}}
+        </div>
+        <div class="col_content">
+            {{node.label}}
+        </div>
+        <div class="col_content">
+            {{node.host}}
+        </div>
+        <div class="col_content">
+            {{node.port}}
         </div>
     </div>
 </template>

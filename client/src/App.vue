@@ -3,7 +3,8 @@
   <div v-if="dialog" class="pod__detail" id="podDetail">
     <div class="detail__content">
       <div>{{selectedPod.label}}</div>
-      <div>{{selectedPod.id}}</div>
+      <div>{{selectedPod.host}}</div>
+      <div>{{selectedPod.port}}</div>
     </div>
   </div>
   <Pods :nodes="nodes"/>
@@ -14,6 +15,7 @@ import Pods from '@/components/Pods'
 import { DataSet,Network } from 'vis'
 import { onMounted, ref } from 'vue'
 import { getCurrentInstance } from 'vue'
+// import testData from '@/assets/test.json'
 
 export default {
   name: 'App',
@@ -23,41 +25,27 @@ export default {
   setup(){
     const app = getCurrentInstance()
     const axios = app.appContext.config.globalProperties.axios
-    const response = ref([])
-    axios.get("/pods").then(res => response.value = res)
     const dialog = ref(false)
     const selectedPod = ref({})
     const container = ref(null)
-    const nodes = [
-        {id: 1, label: 'Node 1'},
-        {id: 2, label: 'Node 2'},
-        {id: 3, label: 'Node 3'},
-        {id: 4, label: 'Node 4'},
-        {id: 5, label: 'Node 5'},
-        {id: 6, label: 'Node 6'},
-    ]
-    const edges = [
-        {from: 1, to: 3},
-        {from: 1, to: 2},
-        {from: 2, to: 4},
-        {from: 2, to: 5}
-    ]
-    const dataNodes = new DataSet(nodes)
-    const dataEdges = new DataSet(edges)
-    const data = {
-        nodes: dataNodes,
-        edges: dataEdges
-    }
+    const nodes = ref([])
+    const edges = ref([])
     const options = {
       clickToUse: true,
     }
 
-    onMounted(() => {
+    onMounted(async () => {
+      const response = await axios.get("/pods")
+      nodes.value = serializeNodes(response.data)
+      const data = {
+          nodes: new DataSet(nodes.value),
+          edges: new DataSet(edges.value)
+      }
       container.value = document.getElementById('graph');
       const network = new Network(container.value, data, options);
       network.on("click", (e) => {
         if(e.nodes.length > 0){
-          selectedPod.value = nodes.find(node => node.id === e.nodes[0])
+          selectedPod.value = nodes.value.find(node => node.id === e.nodes[0])
           dialog.value = true
         }else{
           selectedPod.value = {}
@@ -71,6 +59,19 @@ export default {
         }
       })
     })
+
+    const serializeNodes = (pods) => {
+      return pods.map((item,index) => {
+        const podName = Object.keys(item)[0]
+        return {
+          id: index,
+          label: podName,
+          host: item[podName].host,
+          port: item[podName].port,
+          specification: item[podName].specification,
+        }
+      })
+    }
 
     return {
       dialog,

@@ -3,6 +3,8 @@
         <div class="table__header">
             <div class="table__col">Id</div>
             <div class="table__col">Name</div>
+            <div class="table__col">Host</div>
+            <div class="table__col">Port</div>
         </div>
         <Pod :class="['table__content',index === nodes.length - 1 ? 'last_row' : '']"
           v-for="(node,index) in nodes"
@@ -40,6 +42,7 @@ export default {
 }
 .table__content{
     background-color: #dddddd;
+    text-align: center;
 }
 .last__row{
     border-bottom: #54a2ea
