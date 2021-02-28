@@ -22,10 +22,14 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 })
 
-app.get('/db', (req, res) => {
-    res.json({
-        message: "DB is NOT available yet. :)"
-    })
+app.get('/db', async (req, res) => {
+    const pods = await DB.getAllPods()
+    res.json(pods)
+})
+
+app.post('/pod/insert', async (req, res) => {
+
+    res.status(200).send(req.body)
 })
 
 

@@ -8,11 +8,11 @@ module.exports = {
             host: process.env.DEV_DB_HOST,
             user: process.env.DEV_DB_USER,
             database: process.env.DEV_DB_NAME,
-            password: DEV_DB_PASSWORD,
+            password: process.env.DEV_DB_PASSWORD,
             port: 5432
         },
         migrations: {
-            directory: './db/migrations'
+            directory: './database/migrations'
         }
     },
 
@@ -22,11 +22,11 @@ module.exports = {
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             database: process.env.DB_NAME,
-            password: DB_PASSWORD,
+            password: process.env.DB_PASSWORD,
             port: 5432
         },
         migrations: {
-            directory: './db/migrations'
+            directory: './database/migrations'
         }
     }
 
