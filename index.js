@@ -33,7 +33,7 @@ app.get('/db', async (req, res) => {
 app.post('/pod/insert', async (req, res) => {
     await DB.insertPod({
         name: req.body.name,
-        oas: req.body.oas
+        oas: JSON.stringify(req.body.oas)
     })
     res.json(req.body)
 })

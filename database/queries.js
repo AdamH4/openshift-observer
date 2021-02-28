@@ -14,7 +14,7 @@ const insertPod = async (pod) => {
   try {
     await db("pods").insert({
       name: pod.name,
-      oas: pod.specification
+      oas: pod.oas
     })
   } catch (e) {
     console.error(e)
