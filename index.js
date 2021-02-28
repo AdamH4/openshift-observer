@@ -1,7 +1,8 @@
-var express = require('express')
+const express = require('express')
 const yaml = require('js-yaml')
-var app = express()
+const app = express()
 const axios = require('axios')
+const DB = require('./database/queries')
 app.use(express.static('client/dist'))
 
 app.use(function (req, res, next) {

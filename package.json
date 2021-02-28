@@ -6,7 +6,8 @@
   "author": "Adam Harnusek",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "migrate": "knex migrate:latest"
   },
   "dependencies": {
     "axios": "^0.21.1",
