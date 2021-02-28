@@ -3,6 +3,9 @@ const yaml = require('js-yaml')
 const app = express()
 const axios = require('axios')
 const DB = require('./database/queries')
+// const bodyParser = require('body-parser')
+// app.use(bodyParser)
+app.use(express.json())
 app.use(express.static('client/dist'))
 
 app.use(function (req, res, next) {
@@ -28,8 +31,11 @@ app.get('/db', async (req, res) => {
 })
 
 app.post('/pod/insert', async (req, res) => {
-
-    res.status(200).send(req.body)
+    await DB.insertPod({
+        name: req.body.name,
+        oas: req.body.oas
+    })
+    res.json(req.body)
 })
 
 
