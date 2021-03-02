@@ -89,7 +89,7 @@ function getFreshPods() {
             }
             index += 1
         }
-        return JSON.parse(oas)
+        console.log(oas)
     })
 }
 
