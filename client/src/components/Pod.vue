@@ -4,7 +4,7 @@
             {{node.id}}
         </div>
         <div class="col_content">
-            {{node.name}}
+            {{node.label}}
         </div>
         <div class="col_content">
             {{node.host}}
