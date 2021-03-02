@@ -2,7 +2,7 @@
   <div id="graph"></div>
   <div v-if="dialog" class="pod__detail" id="podDetail">
     <div class="detail__content">
-      <div>{{selectedPod.label}}</div>
+      <div>{{selectedPod.name}}</div>
       <div>{{selectedPod.host}}</div>
       <div>{{selectedPod.port}}</div>
     </div>

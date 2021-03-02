@@ -65,7 +65,9 @@ app.get('/pods', async (req, res) => {
         const podName = Object.keys(pod)[0]
         await DB.insertPod({
             name: podName,
-            oas: JSON.stringify(pod[podName].specification)
+            oas: JSON.stringify(pod[podName].specification),
+            port: pod[podName].port,
+            host: pod[podName].host,
         })
     })
 })
