@@ -59,8 +59,8 @@ app.post('/pod/insert', async (req, res) => {
 app.get('/pods', async (req, res) => {
     const pods = await DB.getAllPods()
     res.json(pods)
-    const pods = getFreshPods()
-    console.log(pods)
+    const freshPods = getFreshPods()
+    console.log(freshPods)
 })
 
 function getFreshPods() {
