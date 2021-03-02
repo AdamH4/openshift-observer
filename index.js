@@ -79,7 +79,7 @@ function getFreshPods() {
             }
         })
     })
-    Promise.allSettled(documents).then(docs => {
+    return Promise.allSettled(documents).then(docs => {
         let index = 0
         for (let doc of docs) {
             if (doc.status === 'fulfilled') {
@@ -89,7 +89,6 @@ function getFreshPods() {
             }
             index += 1
         }
-        console.log(oas)
         return oas
     })
 }
