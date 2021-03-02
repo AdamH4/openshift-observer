@@ -89,6 +89,7 @@ function getFreshPods() {
             }
             index += 1
         }
+        console.log(oas)
         return oas
     })
 }
