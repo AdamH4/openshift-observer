@@ -35,8 +35,7 @@ export default {
     }
 
     onMounted(async () => {
-      const response = await axios.get("/pods")
-      nodes.value = serializeNodes(response.data)
+      nodes.value = await axios.get("/pods")
       const data = {
           nodes: new DataSet(nodes.value),
           edges: new DataSet(edges.value)
@@ -59,19 +58,6 @@ export default {
         }
       })
     })
-
-    const serializeNodes = (pods) => {
-      return pods.map((item,index) => {
-        const podName = Object.keys(item)[0]
-        return {
-          id: index,
-          label: podName,
-          host: item[podName].host,
-          port: item[podName].port,
-          specification: item[podName].specification,
-        }
-      })
-    }
 
     return {
       dialog,

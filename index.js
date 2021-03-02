@@ -70,7 +70,7 @@ app.get('/pods', async (req, res) => {
     console.log(freshPods)
 })
 
-function getFreshPods() {
+async function getFreshPods() {
     let envOfPods = filterPodEnvVariables()
     let oas = []
     let documents = []
@@ -86,18 +86,17 @@ function getFreshPods() {
             }
         })
     })
-    return Promise.allSettled(documents).then(docs => {
-        let index = 0
-        for (let doc of docs) {
-            if (doc.status === 'fulfilled') {
-                oas[index][podNames[index]].specification = doc.value
-            } else {
-                oas[index][podNames[index]].specification = {}
-            }
-            index += 1
+    const docs = await Promise.allSettled(documents)
+    let index = 0
+    for (let doc of docs) {
+        if (doc.status === 'fulfilled') {
+            oas[index][podNames[index]].specification = doc.value
+        } else {
+            oas[index][podNames[index]].specification = {}
         }
-        return oas
-    })
+        index += 1
+    }
+    return oas
 }
 
 async function getOASFromPod(url) {
