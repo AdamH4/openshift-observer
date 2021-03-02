@@ -42,6 +42,7 @@ export default {
           nodes: new DataSet(nodes.value),
           edges: new DataSet(edges.value)
       }
+      console.log(data)
       container.value = document.getElementById('graph');
       const network = new Network(container.value, data, options);
       network.on("click", (e) => {
