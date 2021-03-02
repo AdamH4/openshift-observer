@@ -56,7 +56,7 @@ app.post('/pod/insert', async (req, res) => {
  *   200:
  *     description: Return OAS of all pods.
  */
-app.get('/pods', (req, res) => {
+app.get('/pods', async (req, res) => {
     const pods = await DB.getAllPods()
     res.json(pods)
     const pods = getFreshPods()
