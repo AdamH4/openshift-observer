@@ -60,6 +60,7 @@ app.get('/pods', async (req, res) => {
     const pods = await DB.getAllPods()
     res.json(pods)
     const freshPods = await getFreshPods()
+    console.log(freshPods)
     freshPods.forEach(async (pod) => {
         const podName = Object.keys(pod)[0]
         await DB.insertPod({
@@ -67,7 +68,6 @@ app.get('/pods', async (req, res) => {
             oas: JSON.stringify(pod[podName].specification)
         })
     })
-    console.log(freshPods)
 })
 
 async function getFreshPods() {
