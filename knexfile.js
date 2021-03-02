@@ -19,7 +19,7 @@ module.exports = {
     openshift: {
         client: 'pg',
         connection: {
-            host: process.env.DB_HOST,
+            host: process.env.POSTGRESQL_SERVICE_HOST || process.env.HOST,
             user: process.env.DB_USER,
             database: process.env.DB_NAME,
             password: process.env.DB_PASSWORD,
