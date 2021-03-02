@@ -35,7 +35,9 @@ export default {
     }
 
     onMounted(async () => {
-      nodes.value = await axios.get("/pods").data
+      const response = await axios.get("/pods")
+      nodes.value = response.data
+      console.log(nodes.value)
       const data = {
           nodes: new DataSet(nodes.value),
           edges: new DataSet(edges.value)
