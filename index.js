@@ -3,6 +3,7 @@ const yaml = require('js-yaml')
 const app = express()
 const axios = require('axios')
 const DB = require('./database/queries')
+const knex = require('./database/config')
 // const bodyParser = require('body-parser')
 // app.use(bodyParser)
 app.use(express.json())
@@ -28,6 +29,15 @@ app.get('/', function (req, res) {
 app.get('/db', async (req, res) => {
     const pods = await DB.getAllPods()
     res.json(pods)
+})
+
+app.get('/migrate', () => {
+    knex
+        .migrate
+        .latest()
+        .then(res => {
+            console.log(res)
+        })
 })
 
 app.post('/pod/insert', async (req, res) => {
