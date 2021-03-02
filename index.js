@@ -57,6 +57,13 @@ app.post('/pod/insert', async (req, res) => {
  *     description: Return OAS of all pods.
  */
 app.get('/pods', (req, res) => {
+    const pods = await DB.getAllPods()
+    res.json(pods)
+    const pods = getFreshPods()
+    console.log(pods)
+})
+
+function getFreshPods() {
     let envOfPods = filterPodEnvVariables()
     let oas = []
     let documents = []
@@ -82,9 +89,9 @@ app.get('/pods', (req, res) => {
             }
             index += 1
         }
-        res.json(oas)
+        return JSON.parse(oas)
     })
-})
+}
 
 async function getOASFromPod(url) {
     let response
