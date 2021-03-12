@@ -37,12 +37,10 @@ export default {
     onMounted(async () => {
       const response = await axios.get("/pods")
       nodes.value = response.data
-      console.log(nodes.value)
       const data = {
           nodes: new DataSet(nodes.value),
           edges: new DataSet(edges.value)
       }
-      console.log(data)
       container.value = document.getElementById('graph');
       const network = new Network(container.value, data, options);
       network.on("click", (e) => {

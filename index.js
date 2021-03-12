@@ -58,9 +58,10 @@ app.post('/pod/insert', async (req, res) => {
  */
 app.get('/pods', async (req, res) => {
     const pods = await DB.getAllPods()
-    res.json(pods)
+    if (pods.length) res.json(pods)
+
     const freshPods = await getFreshPods()
-    console.log(freshPods)
+    if (!pods.length) res.json(freshPods)
     freshPods.forEach(async (pod) => {
         const podName = Object.keys(pod)[0]
         await DB.insertPod({
