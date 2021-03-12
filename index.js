@@ -142,6 +142,6 @@ function filterPodEnvVariables() {
 const port = process.env.PORT || 8080
 
 app.listen(port, function () {
-    console.log("Example app listening at port " + port)
+    console.log("Example app listening at portt " + port)
 })
 
