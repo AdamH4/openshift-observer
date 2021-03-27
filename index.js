@@ -31,9 +31,14 @@ app.get('/db', async (req, res) => {
     res.json(pods)
 })
 
+app.get("/test/route", (req, res) => {
+    res.json({
+        message: "Succesfull test"
+    })
+})
+
 app.get('/migrate', () => {
-    knex
-        .migrate
+    knex.migrate
         .latest()
         .then(res => {
             console.log(res)
@@ -141,7 +146,18 @@ function filterPodEnvVariables() {
 
 const port = process.env.PORT || 8080
 
-app.listen(port, function () {
-    console.log("Example app listening at port " + port)
+app.listen(port, async function () {
+    let retries = 5
+    while (retries) {
+        try {
+            await knex.migrate.latest()
+            await knex.seed.run()
+            break
+        } catch (error) {
+            retries--
+            console.log(`Number of retries left: ${retries}`)
+            await new Promise(res => setTimeout(res, 5000))
+        }
+    }
 })
 

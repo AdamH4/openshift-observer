@@ -6,8 +6,9 @@
   "author": "Adam Harnusek",
   "license": "MIT",
   "scripts": {
-    "start": " nodemon index.js",
+    "start": "nodemon index.js",
     "migrate": "knex migrate:latest",
+    "seed": "knex seed:run",
     "rollback": "knex migrate:rollback"
   },
   "dependencies": {

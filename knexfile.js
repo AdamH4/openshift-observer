@@ -4,6 +4,7 @@ module.exports = {
 
     development: {
         client: 'pg',
+        // connection: process.env.DATABASE_URL,
         connection: {
             host: process.env.DEV_DB_HOST,
             user: process.env.DEV_DB_USER,
@@ -13,6 +14,9 @@ module.exports = {
         },
         migrations: {
             directory: './database/migrations'
+        },
+        seeds: {
+            directory: './database/seeds'
         }
     },
 
