@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: server
+  name: server
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: server
+  strategy:
+    resources: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: server
+    spec:
+      containers:
+        - args:
+            - npm
+            - run
+            - start
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_HOST
+                  name: env
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_NAME
+                  name: env
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_PASSWORD
+                  name: env
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_USER
+                  name: env
+            - name: DEV_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DEV_DB_HOST
+                  name: env
+            - name: DEV_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DEV_DB_NAME
+                  name: env
+            - name: DEV_DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: DEV_DB_PASSWORD
+                  name: env
+            - name: DEV_DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: DEV_DB_USER
+                  name: env
+          image: ' '
+          name: observer-server
+          ports:
+            - containerPort: 8080
+          resources: {}
+      restartPolicy: Always
+  test: false
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - observer_server
+        from:
+          kind: ImageStreamTag
+          name: server:latest
+      type: ImageChange
+status:
+  availableReplicas: 0
+  latestVersion: 0
+  observedGeneration: 0
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0
