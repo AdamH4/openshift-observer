@@ -37,14 +37,15 @@ export default {
     },
   }),
   
-  mounted(){
-      const response = [
-        { id: 10, label: 'pod1', host: "147.123.123.123", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} }},
-        { id: 20, label: 'pod2', host: "147.123.123.124", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} } },
-        { id: 30, label: 'pod3', host: "147.123.123.125", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} } },
-        { id: 40, label: 'pod4', host: "147.123.123.126", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} } },
-      ]
-      this.nodes = response
+  async mounted(){
+      const response = await this.axios.get("/pods")
+      // const response = [
+      //   { id: 10, label: 'pod1', host: "147.123.123.123", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} }},
+      //   { id: 20, label: 'pod2', host: "147.123.123.124", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} } },
+      //   { id: 30, label: 'pod3', host: "147.123.123.125", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} } },
+      //   { id: 40, label: 'pod4', host: "147.123.123.126", port: "8080", oas: {desc: "nieco", name: "pod", path: { name:"home"} } },
+      // ]
+      this.nodes = response.data
       const data = {
           nodes: new DataSet(this.nodes),
           edges: new DataSet(this.edges)

@@ -7,6 +7,7 @@ const DB = require('./database/queries')
 const knex = require('./database/config')
 // const bodyParser = require('body-parser')
 // app.use(bodyParser)
+
 app.use(express.json())
 app.use(express.static('client/dist'))
 
