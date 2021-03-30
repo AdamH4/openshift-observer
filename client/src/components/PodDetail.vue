@@ -22,7 +22,7 @@
                     <div class="pod__oas">
                         <h4>Specification</h4>
                         <div class="oas__specification">
-                            <TreeMenu :data="pod.oas"/>
+                            <TreeMenu :data="pod.specification"/>
                         </div>
                     </div>
                 </div>

@@ -1,15 +1,4 @@
 <template>
-    <div class="next__iteration" v-if="Object.keys(compoundEntries).length">
-        <div v-for="(value,key,index) in compoundEntries" :key="index">
-            <div @click="open[index] = !open[index]" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" class="parent">
-                <OpeningArrow :open="open[index]" :hover="hover[index]" />
-                <span class="parentText">
-                    {{ key }}
-                </span> 
-            </div>
-            <Tree v-if="open[index]" :data="value" />
-        </div>
-    </div>
     <div class="tree__item" v-for="(value, key) in directEntries" :key="key">
         <span class="direct__name">
             {{ key }} 
@@ -17,6 +6,17 @@
         <span class="direct__value">
             - "{{ value }}"
         </span>
+    </div>
+    <div class="next__iteration" v-if="Object.keys(compoundEntries).length">
+        <div v-for="(value,key,index) in compoundEntries" :key="index">
+            <div @click="open[index] = !open[index]" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" class="parent">
+                <OpeningArrow :open="open[index]" />
+                <span class="parentText">
+                    {{ key }}
+                </span> 
+            </div>
+            <Tree v-if="open[index]" :data="value" />
+        </div>
     </div>
 </template>
 
@@ -32,7 +32,6 @@ export default {
     },
     data: () => ({
         open: [],
-        hover: [],
     }),
     computed:{
         directEntries(){

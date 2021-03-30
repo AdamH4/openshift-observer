@@ -13,28 +13,7 @@
 export default {
     props:{
         open: Boolean,
-        hover: Boolean,
     },
-    watch: {
-        hover(val){
-            const arrow = document.getElementById("triangle")
-            if(val && !this.open){
-                arrow.animate(
-                    [
-                        { opacity: 1 },
-                        { transform: "translateX(40%)"},
-                        { transform: "translateX(1%)"},
-                    ],
-                    {
-                        duration: 4000,
-                        iterations: Infinity
-                    }
-                )
-            }else{
-                arrow.getAnimations().forEach(anim => anim.cancel())
-            }
-        }
-    }
 }
 </script>
 
@@ -44,17 +23,6 @@ export default {
     }
     #triangle {
         fill: red;
-    }
-    @keyframes bounceRight {
-        0%{
-            opacity: 1;
-        }
-        50%{
-            transform: translateX(40%);
-        }
-        100%{
-            tranform: translateX(1%);
-        }
     }
     svg {
         cursor: pointer;
