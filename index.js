@@ -1,4 +1,5 @@
 const express = require('express')
+const cron = require('node-cron')
 const yaml = require('js-yaml')
 const app = express()
 const axios = require('axios')
@@ -14,6 +15,17 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 })
+
+// initialize cron job on each 30min
+const refreshingPodsTask = cron.schedule("*/30 * * * *", async () => {
+    try {
+        const freshPods = await getFreshPods()
+        savePods(freshPods)
+        console.log("---Cron successfuly done---")
+    } catch (err) {
+        console.error(err)
+    }
+}, { scheduled: false })
 
 /*
  * @api [get] /
@@ -53,7 +65,6 @@ app.post('/pod/insert', async (req, res) => {
     res.json(req.body)
 })
 
-
 /*
  * @api [get] /pods
  * description: Filter all env variables and return their OAS
@@ -67,7 +78,20 @@ app.get('/pods', async (req, res) => {
 
     const freshPods = await getFreshPods()
     if (!pods.length) res.json(freshPods)
-    freshPods.forEach(async (pod) => {
+    savePods(freshPods)
+    // freshPods.forEach(async (pod) => {
+    //     const podName = Object.keys(pod)[0]
+    //     await DB.insertPod({
+    //         name: podName,
+    //         oas: JSON.stringify(pod[podName].specification),
+    //         port: pod[podName].port,
+    //         host: pod[podName].host,
+    //     })
+    // })
+})
+
+async function savePods(pods) {
+    pods.forEach(async (pod) => {
         const podName = Object.keys(pod)[0]
         await DB.insertPod({
             name: podName,
@@ -76,7 +100,8 @@ app.get('/pods', async (req, res) => {
             host: pod[podName].host,
         })
     })
-})
+
+}
 
 async function getFreshPods() {
     let envOfPods = filterPodEnvVariables()
@@ -152,6 +177,7 @@ app.listen(port, async function () {
         try {
             await knex.migrate.latest()
             await knex.seed.run()
+            refreshingPodsTask.start();
             break
         } catch (error) {
             retries--
