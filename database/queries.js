@@ -12,12 +12,15 @@ const getAllPods = async () => {
 
 const insertPod = async (pod) => {
   try {
-    await db("pods").insert({
-      label: pod.name,
-      oas: pod.oas,
-      host: pod.host,
-      port: pod.port
-    })
+    await db("pods")
+      .insert({
+        label: pod.name,
+        oas: pod.oas,
+        host: pod.host,
+        port: pod.port
+      })
+      .onConflict()
+      .merge()
   } catch (e) {
     console.error(e)
   }
