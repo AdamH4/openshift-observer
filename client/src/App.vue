@@ -11,11 +11,13 @@
       </div>
     </div> -->
     <!-- <Pods :nodes="nodes"/> -->
+    <Accordion :items="accordionItems"/>
 </template>
 
 <script>
 // import Pods from '@/components/Pods'
 import PodDetail from '@/components/PodDetail'
+import Accordion from '@/components/Accordion'
 import { DataSet,Network } from 'vis'
 // import { onMounted, ref } from 'vue'
 // import { getCurrentInstance } from 'vue'
@@ -24,13 +26,13 @@ import { DataSet,Network } from 'vis'
 export default {
   name: 'App',
   components:{
-    PodDetail 
+    PodDetail, Accordion
   },
   data: () => ({
     dialog: false,
     selectedPod: {},
     container: null,
-    pods: {},
+    pods: [],
     nodes: [],
     edges: [],
     options: {
@@ -178,6 +180,25 @@ export default {
         }
       })
   },
+  computed: {
+    accordionItems(){
+      return this.pods.map(pod => {
+        let one = {
+          name: pod.label,
+          id: pod.id,
+        }
+        Object.keys(pod).forEach(key => {
+          const selectedAttribute = pod[key]
+          if(typeof selectedAttribute === 'object'){
+              one.paths = selectedAttribute.specification.paths
+                ? Object.keys(selectedAttribute.specification?.paths).map(path => path)
+                : []
+          }
+        })
+        return one
+      })
+    }
+  }
 }
 </script>
 <style>
