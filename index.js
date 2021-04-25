@@ -5,6 +5,8 @@ const app = express()
 const axios = require('axios')
 const DB = require('./database/queries')
 const knex = require('./database/config')
+const response = require('./example-response.json')
+const { parsePodsFromApi } = require("./helpers")
 // const bodyParser = require('body-parser')
 // app.use(bodyParser)
 
@@ -44,6 +46,11 @@ app.get('/db', async (req, res) => {
     res.json(pods)
 })
 
+app.get('/api', async (req, res) => {
+    res.json(response)
+    parsePodsFromApi(response)
+})
+
 app.get("/test/route", (req, res) => {
     res.json({
         message: "Succesfull test"
@@ -74,12 +81,12 @@ app.post('/pod/insert', async (req, res) => {
  *     description: Return OAS of all pods.
  */
 app.get('/pods', async (req, res) => {
-    const pods = await DB.getAllPods()
-    if (pods.length) res.json(pods)
+    // const pods = await DB.getAllPods()
+    // if (pods.length) res.json(pods)
 
-    const freshPods = await getFreshPods()
-    if (!pods.length) res.json(freshPods)
-    savePods(freshPods)
+    // const freshPods = await getFreshPods()
+    // if (!pods.length) res.json(freshPods)
+    // savePods(freshPods)
     // freshPods.forEach(async (pod) => {
     //     const podName = Object.keys(pod)[0]
     //     await DB.insertPod({
@@ -91,100 +98,99 @@ app.get('/pods', async (req, res) => {
     // })
 })
 
-async function savePods(pods) {
-    pods.forEach(async (pod) => {
-        const podName = Object.keys(pod)[0]
-        await DB.insertPod({
-            name: podName,
-            oas: JSON.stringify(pod[podName].specification),
-            port: pod[podName].port,
-            host: pod[podName].host,
-        })
-    })
+// async function savePods(pods) {
+//     pods.forEach(async (pod) => {
+//         const podName = Object.keys(pod)[0]
+//         await DB.insertPod({
+//             name: podName,
+//             oas: JSON.stringify(pod[podName].specification),
+//             port: pod[podName].port,
+//             host: pod[podName].host,
+//         })
+//     })
+// }
 
-}
+// async function getFreshPods() {
+//     let envOfPods = filterPodEnvVariables()
+//     let oas = []
+//     let documents = []
+//     let podNames = []
+//     Object.keys(envOfPods).forEach(key => {
+//         const document = getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
+//         podNames.push(key)
+//         documents.push(document)
+//         oas.push({
+//             [key]: {
+//                 port: envOfPods[key].port,
+//                 host: envOfPods[key].host,
+//             }
+//         })
+//     })
+//     const docs = await Promise.allSettled(documents)
+//     let index = 0
+//     for (let doc of docs) {
+//         if (doc.status === 'fulfilled') {
+//             oas[index][podNames[index]].specification = doc.value
+//         } else {
+//             oas[index][podNames[index]].specification = {}
+//         }
+//         index += 1
+//     }
+//     return oas
+// }
 
-async function getFreshPods() {
-    let envOfPods = filterPodEnvVariables()
-    let oas = []
-    let documents = []
-    let podNames = []
-    Object.keys(envOfPods).forEach(key => {
-        const document = getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
-        podNames.push(key)
-        documents.push(document)
-        oas.push({
-            [key]: {
-                port: envOfPods[key].port,
-                host: envOfPods[key].host,
-            }
-        })
-    })
-    const docs = await Promise.allSettled(documents)
-    let index = 0
-    for (let doc of docs) {
-        if (doc.status === 'fulfilled') {
-            oas[index][podNames[index]].specification = doc.value
-        } else {
-            oas[index][podNames[index]].specification = {}
-        }
-        index += 1
-    }
-    return oas
-}
+// async function getOASFromPod(url) {
+//     let response
+//     try {
+//         return await axios.get(`http://${url}/openapi.json`)
+//     } catch (err) {
+//         try {
+//             response = await axios.get(`http://${url}/openapi.yaml`)
+//         } catch (error) {
+//             return {}
+//         }
+//     }
+//     return yaml.safeLoad(response.data)
+// }
 
-async function getOASFromPod(url) {
-    let response
-    try {
-        return await axios.get(`http://${url}/openapi.json`)
-    } catch (err) {
-        try {
-            response = await axios.get(`http://${url}/openapi.yaml`)
-        } catch (error) {
-            return {}
-        }
-    }
-    return yaml.safeLoad(response.data)
-}
-
-function filterPodEnvVariables() {
-    let enviromentOpenshiftVariables = {}
-    Object.keys(process.env).forEach(key => {
-        const envKey = String(key)
-        if (envKey.endsWith("SERVICE_PORT") && !(envKey.includes("KUBERNETES") || envKey.includes("OPENSHIFT_OBSERVER"))) {
-            const keyIndex = envKey.indexOf("SERVICE_PORT")
-            const key = envKey.slice(0, keyIndex - 1)
-            if (enviromentOpenshiftVariables[key] === undefined) {
-                enviromentOpenshiftVariables[key] = {}
-            }
-            enviromentOpenshiftVariables[key].port = process.env[envKey]
-        } else if (envKey.endsWith("SERVICE_HOST") && !(envKey.includes("KUBERNETES") || envKey.includes("OPENSHIFT_OBSERVER"))) {
-            const keyIndex = envKey.indexOf("SERVICE_HOST")
-            const key = envKey.slice(0, keyIndex - 1)
-            if (enviromentOpenshiftVariables[key] === undefined) {
-                enviromentOpenshiftVariables[key] = {}
-            }
-            enviromentOpenshiftVariables[key].host = process.env[envKey]
-        }
-    })
-    return enviromentOpenshiftVariables
-}
+// function filterPodEnvVariables() {
+//     let enviromentOpenshiftVariables = {}
+//     Object.keys(process.env).forEach(key => {
+//         const envKey = String(key)
+//         if (envKey.endsWith("SERVICE_PORT") && !(envKey.includes("KUBERNETES") || envKey.includes("OPENSHIFT_OBSERVER"))) {
+//             const keyIndex = envKey.indexOf("SERVICE_PORT")
+//             const key = envKey.slice(0, keyIndex - 1)
+//             if (enviromentOpenshiftVariables[key] === undefined) {
+//                 enviromentOpenshiftVariables[key] = {}
+//             }
+//             enviromentOpenshiftVariables[key].port = process.env[envKey]
+//         } else if (envKey.endsWith("SERVICE_HOST") && !(envKey.includes("KUBERNETES") || envKey.includes("OPENSHIFT_OBSERVER"))) {
+//             const keyIndex = envKey.indexOf("SERVICE_HOST")
+//             const key = envKey.slice(0, keyIndex - 1)
+//             if (enviromentOpenshiftVariables[key] === undefined) {
+//                 enviromentOpenshiftVariables[key] = {}
+//             }
+//             enviromentOpenshiftVariables[key].host = process.env[envKey]
+//         }
+//     })
+//     return enviromentOpenshiftVariables
+// }
 
 const port = process.env.PORT || 8080
 
 app.listen(port, async function () {
-    let retries = 5
-    while (retries) {
-        try {
-            await knex.migrate.latest()
-            await knex.seed.run()
-            refreshingPodsTask.start();
-            break
-        } catch (error) {
-            retries--
-            console.log(`Number of retries left: ${retries}`)
-            await new Promise(res => setTimeout(res, 5000))
-        }
-    }
+    // let retries = 5
+    // while (retries) {
+    //     try {
+    //         await knex.migrate.latest()
+    //         await knex.seed.run()
+    //         refreshingPodsTask.start();
+    //         break
+    //     } catch (error) {
+    //         retries--
+    //         console.log(`Number of retries left: ${retries}`)
+    //         await new Promise(res => setTimeout(res, 5000))
+    //     }
+    // }
 })
 
