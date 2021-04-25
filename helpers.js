@@ -26,8 +26,8 @@ const parseBuildAndUpdatePods = (items, pods) => {
     items.forEach(item => {
         if (item.metadata.ownerReferences[0].kind === "Build") {
             const podIndex = findPodIndexByBuildName(pods, item.metadata.labels["openshift.io/build.name"])
-            if (podIndex) {
-                pods[podIndex].builds++
+            if (typeof podIndex !== undefined) {
+                pods[podIndex].buildsCount++
                 pods[podIndex].repoLink = pods[podIndex].repoLink ? pods[podIndex].repoLink : findBuildRepoURL(item)
             }
         }
@@ -46,8 +46,14 @@ const parsePods = (items) => {
                 creationTimestamp: item.metadata.creationTimestamp,
                 status: item.status.phase,
                 podLink: `http://${item.metadata.labels.app}-${item.metadata.namespace}.apps-crc.testing`,
-                repoLink: null,
-                builds: null,
+                containers: item.spec.containers.map(container => {
+                    return {
+                        containerName: container.name,
+                        ports: container.ports
+                    }
+                }),
+                repoLink: 0,
+                buildsCount: null,
             })
         }
     })
