@@ -35,26 +35,43 @@ const parseBuildAndUpdatePods = (items, pods) => {
     return pods
 }
 
+// loop pod array and return index of pod with podName
+// or return undefined
+const checkIfPodIsListed = (pods, podName) => {
+    let i = 0
+    for (let pod in pods) {
+        if (pod.name === podName) return i
+        i++
+    }
+    return undefined
+}
+
 //get just pods from response
 const parsePods = (items) => {
     let pods = []
     items.forEach(item => {
         if (item.metadata.ownerReferences[0].kind === "ReplicaSet") {
-            pods.push({
-                name: item.metadata.labels.app,
-                cluster: item.metadata.namespace,
-                creationTimestamp: item.metadata.creationTimestamp,
-                status: item.status.phase,
-                podLink: `http://${item.metadata.labels.app}-${item.metadata.namespace}.apps-crc.testing`,
-                containers: item.spec.containers.map(container => {
-                    return {
-                        containerName: container.name,
-                        ports: container.ports
-                    }
-                }),
-                repoLink: 0,
-                buildsCount: null,
-            })
+            const podIndex = checkIfPodIsListed(pods, item.metadata.labels.app)
+            if (podIndex === undefined) {
+                pods.push({
+                    name: item.metadata.labels.app,
+                    cluster: item.metadata.namespace,
+                    creationTimestamp: item.metadata.creationTimestamp,
+                    status: item.status.phase,
+                    podLink: `http://${item.metadata.labels.app}-${item.metadata.namespace}.apps-crc.testing`,
+                    containers: item.spec.containers.map(container => {
+                        return {
+                            containerName: container.name,
+                            ports: container.ports
+                        }
+                    }),
+                    replicaSetCount: 0,
+                    repoLink: 0,
+                    buildsCount: null,
+                })
+            } else {
+                pods[podIndex].replicaSetCount++
+            }
         }
     })
     return pods
