@@ -11,7 +11,9 @@
       </div>
     </div> -->
     <!-- <Pods :nodes="nodes"/> -->
-    <Accordion :items="accordionItems"/>
+    <div class="container">
+      <Accordion v-if="accordionItems" :items="accordionItems"/>
+    </div>
 </template>
 
 <script>
@@ -172,7 +174,6 @@ export default {
         if(e.nodes.length > 0){
           const node = this.nodes.get(e.nodes[0])
           this.selectedPod = node[Object.keys(node)[0]]
-          console.log(this.selectedPod)
           this.dialog = true
         }else{
           this.selectedPod = {}
@@ -215,5 +216,8 @@ export default {
     width: 100%;
     height: 400px;
     margin: 20px auto;
+}
+.container {
+  margin: 0 5rem 5rem 5rem;
 }
 </style>
