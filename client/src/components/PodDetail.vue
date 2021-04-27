@@ -62,20 +62,23 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    
     .dialog__background{
         background-color: rgba(0,0,0,0.5);
         cursor: pointer;
-        height: 100%;
+        height: 100vh;
         left: 0;
         position: absolute;
         top:0;
         width: 100%;
+        z-index: 100;
     }
     .dialog__wrapper{
         align-items: center;
         display: flex;
         justify-content: center;
+        z-index: 100;
     }
     .dialog__card{
         background-color: white;
@@ -83,6 +86,8 @@ export default {
         padding: 15px;
         position: absolute;
         box-shadow: 15px 15px #2c3e50;
+        z-index: 100;
+        min-width: clamp(20%, 30%, 100%);
     }
     .dialog__header{
         margin-bottom: 10px;

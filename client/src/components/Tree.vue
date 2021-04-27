@@ -3,9 +3,7 @@
         <span class="direct__name">
             {{ key }} 
         </span>
-        <span class="direct__value">
-            - "{{ value }}"
-        </span>
+        - "<span class="direct__value">{{ value }}</span>"
     </div>
     <div class="next__iteration" v-if="Object.keys(compoundEntries).length">
         <div v-for="(value,key,index) in compoundEntries" :key="index">
@@ -56,26 +54,27 @@ export default {
 }
 </script>
 
-<style>
-    .tree__item{
-        padding: 5px 0 5px 20px;
-    }
-    .next__iteration{
-        padding-left: 20px;
-    }
-    .parent{
-        cursor: pointer;
-        font-weight: bold;
-        margin-left: -11px;
-        display: flex;
-        align-items: center;
-    }
-    .direct__name{
-        text-decoration: underline;
-        color: rgb(247, 138, 138);
-        margin-right: 10px;
-    }
-    .direct__value{
-
-    }
+<style lang="scss" scoped>
+$textColor: #0d9328;
+.tree__item{
+    padding: 5px 0 5px 20px;
+}
+.next__iteration{
+    padding-left: 20px;
+}
+.parent{
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: -11px;
+    display: flex;
+    align-items: center;
+}
+.direct__name{
+    text-decoration: underline;
+    // color: rgb(247, 138, 138);
+    margin-right: 10px;
+}
+.direct__value{
+    color: $textColor;
+}
 </style>

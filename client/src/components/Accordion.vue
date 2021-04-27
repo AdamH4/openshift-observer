@@ -17,8 +17,10 @@
       </div>
       <transition name="slide">
         <div class="row__detail" v-if="openedSectionIndex === index">
-          {{item.paths}}
-          jasn djasnd jasnd asd jasdnaskdj naskdj nasjkdnaskjdn askjdn askjdn askjdn askdnaskdn askdj naskdj asnd aksjd nasdkj asnd kjasdn askjdasndkasjdn askjdansdaskjdasnd asnsajcxnsajkxasxkjnkc ansdaksjdkasnd kjasd nasj dnasd nasd asd asdnasd jnjrekne kwfnkbckjebfsdfjkbewfcwdjkwe ew bwe bwe bwecj wbec ke ef wekj wekjf nwejfn wefn wfk we
+          <h3>Services</h3>
+          <div v-for="(path, index) in item.paths" :key="index" class="pod__path">
+            {{path}}
+          </div>
         </div>
       </transition>
     </div>   
@@ -52,6 +54,8 @@ export default {
 $red: #e04e50;
 $grey: #eee;
 $radius: 5px;
+$blue: #2c3e50;
+$white: #ffffff;
 .accordion__header{
   background-color: $grey;
   border-radius: $radius;
@@ -67,10 +71,13 @@ $radius: 5px;
 .section__symbol{
   font-size: 30px;
   float:right;
+  height: 35px;
   position: absolute;
-  top: 19%;
   right: 30px;
+  text-align: center;
+  top: 19%;
   transform: rotate(45deg);
+  width: 35px;
 }
 .rotate__element{
   transform: rotate(0deg);
@@ -83,7 +90,7 @@ $radius: 5px;
 
 }
 .row__detail{
-  background-color: #eee;
+  background-color: $white;
   padding: 0.7rem;
   padding: 3rem 1rem;
   border: 2px solid $red;
@@ -92,27 +99,14 @@ $radius: 5px;
   background-color: $red;
   color: white;
   border-radius: $radius;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
 }
 
-.slide-enter-active{
-  animation: slide-down 1ms linear;
+.pod__path{
+  font-weight: bold;
+  padding: 5px;
+  color: $blue;
 }
-// .slide-leave-active {
-//   animation: slide-down 0.2s reverse;
-// }
-
-@keyframes slide-down {
-  0%{
-    /* transform: translateY(-15px); */
-    opacity: 0.5;
-    height: 0;
-  }
-  100%{
-    opacity: 1;
-    /* transform: translateY(0px); */
-    height: 100%;
-  }
-}
-
 
 </style>
