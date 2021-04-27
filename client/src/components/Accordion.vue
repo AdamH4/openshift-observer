@@ -4,10 +4,21 @@
       v-for="(item, index) in items"
       :key="index"
     >
-    <div class="accordion__header" @click="toggleSection(index)">{{item.name}}</div>
+      <div 
+        :class="[openedSectionIndex === index ? 'selected__section': '', 'accordion__header']"
+        @click="toggleSection(index)"
+      >
+        <span>
+          {{item.name}}
+        </span>
+        <span :class="['section__symbol', openedSectionIndex === index ? 'rotate__element' : '']">
+          &#215;
+        </span>
+      </div>
       <transition name="slide">
         <div class="row__detail" v-if="openedSectionIndex === index">
           {{item.paths}}
+          jasn djasnd jasnd asd jasdnaskdj naskdj nasjkdnaskjdn askjdn askjdn askjdn askdnaskdn askdj naskdj asnd aksjd nasdkj asnd kjasdn askjdasndkasjdn askjdansdaskjdasnd asnsajcxnsajkxasxkjnkc ansdaksjdkasnd kjasd nasj dnasd nasd asd asdnasd jnjrekne kwfnkbckjebfsdfjkbewfcwdjkwe ew bwe bwe bwecj wbec ke ef wekj wekjf nwejfn wefn wfk we
         </div>
       </transition>
     </div>   
@@ -34,39 +45,72 @@ export default {
         }
       }
     }
-
 }
 </script>
 
-<style>
+<style lang="scss">
+$red: #e04e50;
+$grey: #eee;
+$radius: 5px;
 .accordion__header{
+  background-color: $grey;
+  border-radius: $radius;
   padding: 1.3rem;
+  position: relative;
+}
+.accordion__header:hover{
+  background-color: $red;
+  border-radius: $radius;
+  color: white;
+  cursor: pointer;
+}
+.section__symbol{
+  font-size: 30px;
+  float:right;
+  position: absolute;
+  top: 19%;
+  right: 30px;
+  transform: rotate(45deg);
+}
+.rotate__element{
+  transform: rotate(0deg);
 }
 .accordion__wrapper{
-  border-radius: 10px;
-  background-color: #eee;
-  border: 1px solid #ccc;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+
 }
 .row__detail{
-  background-color: #bbb;
+  background-color: #eee;
   padding: 0.7rem;
+  padding: 3rem 1rem;
+  border: 2px solid $red;
+}
+.selected__section{
+  background-color: $red;
+  color: white;
+  border-radius: $radius;
 }
 
 .slide-enter-active{
-  animation: slide-down 0.5s ease;
+  animation: slide-down 1ms linear;
 }
-.slide-leave-active {
-  animation: slide-down 0.5s reverse;
-}
+// .slide-leave-active {
+//   animation: slide-down 0.2s reverse;
+// }
 
 @keyframes slide-down {
   0%{
-    opacity: 0;
-    transform: translateY(-15px);
+    /* transform: translateY(-15px); */
+    opacity: 0.5;
+    height: 0;
   }
   100%{
     opacity: 1;
-    transform: translateY(0px);
+    /* transform: translateY(0px); */
+    height: 100%;
   }
 }
 

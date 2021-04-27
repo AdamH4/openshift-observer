@@ -80,8 +80,7 @@ const parsePods = (items) => {
 //parse data from api and retrieve them
 const parsePodsFromApi = (response) => {
     let pods = parsePods(response.items)
-    const updatedPods = parseBuildAndUpdatePods(response.items, pods)
-    console.log(updatedPods)
+    return parseBuildAndUpdatePods(response.items, pods)
 }
 
 

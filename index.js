@@ -47,8 +47,8 @@ app.get('/db', async (req, res) => {
 })
 
 app.get('/api', async (req, res) => {
-    res.json(response)
-    parsePodsFromApi(response)
+    // res.json(response)
+    res.json(parsePodsFromApi(response))
 })
 
 app.get("/test/route", (req, res) => {

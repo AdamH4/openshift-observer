@@ -22,7 +22,7 @@ export default {
         transform: rotate(90deg);
     }
     #triangle {
-        fill: red;
+        fill: #e04e50;
     }
     svg {
         cursor: pointer;
