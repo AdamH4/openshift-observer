@@ -87,7 +87,7 @@ export default {
         position: absolute;
         box-shadow: 15px 15px #2c3e50;
         z-index: 100;
-        min-width: clamp(20%, 30%, 100%);
+        min-width: clamp(30%, 30%, 100%);
     }
     .dialog__header{
         margin-bottom: 10px;
