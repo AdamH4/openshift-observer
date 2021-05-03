@@ -2,8 +2,11 @@
 exports.up = function (knex) {
   return knex.schema.createTable("pods", table => {
     table.increments("id").primary()
-    table.text("label").notNullable().unique()
-    table.text("host")
+    table.text("name").notNullable().unique()
+    table.text("url")
+    table.text("cluster_name")
+    table.text("status_message")
+    table.text("repository_link")
     table.text("port")
     table.json("oas")
   })
