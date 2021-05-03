@@ -7,6 +7,7 @@ const DB = require('./database/queries')
 const knex = require('./database/config')
 const response = require('./example-response.json')
 const { parsePodsFromApi } = require("./helpers")
+const k8s = require('@kubernetes/client-node');
 // const bodyParser = require('body-parser')
 // app.use(bodyParser)
 
@@ -98,6 +99,41 @@ app.get('/pods', async (req, res) => {
     // })
 })
 
+app.get("/socket", async (req, res) => {
+    const kc = new k8s.KubeConfig();
+    kc.loadFromDefault()
+    const watch = new k8s.Watch(kc);
+    watch.watch('/api/v1/namespaces/monitoring-cluster/pods',
+        // optional query parameters can go here.
+        {
+            allowWatchBookmarks: true,
+        },
+        // callback is called for each received object.
+        (type, apiObj, watchObj) => {
+            if (type === 'ADDED') {
+                console.log('new object:')
+            } else if (type === 'MODIFIED') {
+                console.log('changed object:')
+            } else if (type === 'DELETED') {
+                console.log('deleted object:')
+            } else if (type === 'BOOKMARK') {
+                console.log(`bookmark: ${watchObj.metadata.resourceVersion}`)
+            } else {
+                console.log('unknown type: ' + type)
+            }
+            // if (apiObj.metadata.name === "monitoring-cluster")
+            console.log(apiObj.metadata.name)
+        },
+        // done callback is called if the watch terminates normally
+        (err) => {
+            console.log("DONE:", err)
+        })
+        .then((req) => {
+            // watch returns a request object which you can use to abort the watch.
+            setTimeout(() => { req.abort(); }, 10 * 1000)
+        })
+    res.status(200).send("NOICE")
+})
 // async function savePods(pods) {
 //     pods.forEach(async (pod) => {
 //         const podName = Object.keys(pod)[0]
