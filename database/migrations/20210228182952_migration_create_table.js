@@ -7,7 +7,8 @@ exports.up = function (knex) {
     table.text("cluster_name")
     table.text("status_message")
     table.text("repository_link")
-    table.text("port")
+    table.text("replicaset_count")
+    table.text("build_count")
     table.json("oas")
   })
 }
