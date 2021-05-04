@@ -126,8 +126,6 @@ const parseEntityFromJson = (entity) => {
             console.log("Default -> in switch")
             break
     }
-    // let pods = parsePods(response.items)
-    // return parseBuildAndUpdatePods(response.items, pods)
 }
 
 
