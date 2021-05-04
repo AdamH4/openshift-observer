@@ -6,7 +6,7 @@ const axios = require('axios')
 const DB = require('./database/queries')
 const knex = require('./database/config')
 const response = require('./example-response.json')
-const { parsePodsFromApi } = require("./helpers")
+const { parseEntityFromJson } = require("./helpers")
 const k8s = require('@kubernetes/client-node');
 // const bodyParser = require('body-parser')
 // app.use(bodyParser)
@@ -47,10 +47,10 @@ app.get('/db', async (req, res) => {
     res.json(pods)
 })
 
-// app.get('/api', async (req, res) => {
-//     // res.json(response)
-//     res.json(parsePodsFromApi(response))
-// })
+app.get('/api', async (req, res) => {
+    // res.json(response)
+    res.json(parseEntityFromJson(response.items[0]))
+})
 
 app.get("/test/route", (req, res) => {
     res.json({
