@@ -21,6 +21,7 @@ exports.up = function (knex) {
       table.text("pod_uid").references("uid").inTable("pods")
       table.text("name")
       table.primary(["id", "pod_uid"])
+      //TODO is this necesarry?
     })
     .createTable("ports", table => {
       table.increments("id").primary()

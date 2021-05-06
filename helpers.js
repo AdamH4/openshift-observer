@@ -53,6 +53,7 @@ const parseAndStoreEntityFromJson = async (entity) => {
             const { pod, containers } = parseReplicaSet(entity)
             // const uid = await DB.insertEntity(pod, DATABASES.POD, "name")
             const response = await DB.insertEntity(containers, DATABASES.CONTAINER, ["pod_uid", "id"])
+            //TODO add array as parameter, watch out it can break insertEntity()
             // console.log(response)
             // containers.forEach(async (container) => {
             //     const containerResponse = await DB.insertEntity(container, DATABASES.CONTAINER)
