@@ -7,9 +7,8 @@ exports.up = function (knex) {
     table.text("cluster_name")
     table.text("status_message")
     table.timestamp("creation_timestamp")
-    table.text("repository_link")
     table.integer("replicaset_count")
-    table.json("oas")
+    table.json("specification")
   })
     .createTable("builds", table => {
       table.text("uid").primary()
@@ -18,10 +17,10 @@ exports.up = function (knex) {
       table.integer("build_order")
     })
     .createTable("containers", table => {
-      table.increments("id").primary()
-      table.text("pod_uid").references("name").inTable("pods")
-      table.text("build_source")
-      table.integer("build_order")
+      table.increments("id")
+      table.text("pod_uid").references("uid").inTable("pods")
+      table.text("name")
+      table.primary(["id", "pod_uid"])
     })
     .createTable("ports", table => {
       table.increments("id").primary()
@@ -32,8 +31,10 @@ exports.up = function (knex) {
 }
 
 exports.down = function (knex) {
-  return knex.schema.dropTableIfExists("pods")
-    .dropTableIfExists("builds")
-    .dropTableIfExists("containers")
-    .dropTableIfExists("ports")
+  return Promise.all([
+    knex.schema.dropTableIfExists("ports"),
+    knex.schema.dropTableIfExists("build"),
+    knex.schema.dropTableIfExists("containers"),
+    knex.schema.dropTableIfExists("ports"),
+  ])
 }

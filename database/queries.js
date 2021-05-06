@@ -10,17 +10,14 @@ const getAllPods = async () => {
   return pods
 }
 
-const insertPod = async (pod) => {
+const insertEntity = async (entity, databaseName, conflictColumn, returnCol) => {
+  const parsedEntityForExcluding = entity.length ? entity[0] : entity
+  const excludedQuery = Object.keys(parsedEntityForExcluding).map(key => `${key} = EXCLUDED.${key}`)
+  const returnColumn = returnCol ? returnCol : Object.keys(parsedEntityForExcluding)[0]
+  const conflict = conflictColumn.length ? conflictColumn.join(", ") : conflictColumn
   try {
-    await db("pods")
-      .insert({
-        label: pod.name,
-        oas: pod.oas,
-        host: pod.host,
-        port: pod.port
-      })
-      .onConflict()
-      .merge()
+    const query = `${db(databaseName).insert(entity).toQuery()} ON CONFLICT(${conflict}) DO UPDATE SET ${excludedQuery.join(", ")} returning ${returnColumn}`
+    return await db.raw(query)
   } catch (e) {
     console.error(e)
   }
@@ -28,5 +25,5 @@ const insertPod = async (pod) => {
 
 module.exports = {
   getAllPods,
-  insertPod
+  insertEntity
 }
