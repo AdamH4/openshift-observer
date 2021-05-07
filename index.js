@@ -1,6 +1,5 @@
 const express = require('express')
 const cron = require('node-cron')
-const yaml = require('js-yaml')
 const app = express()
 const axios = require('axios')
 const DB = require('./database/queries')
@@ -49,7 +48,7 @@ app.get('/db', async (req, res) => {
 })
 
 app.get('/api', async (req, res) => {
-    const data = parseAndStoreEntityFromJson(response.items[4], OPERATIONS.UPDATE)
+    const data = parseAndStoreEntityFromJson(response.items[0], OPERATIONS.INSERT)
     res.json(data)
 })
 

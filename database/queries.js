@@ -1,4 +1,3 @@
-const { update } = require('./config.js')
 const db = require('./config.js')
 
 const getAllPods = async () => {
@@ -11,18 +10,27 @@ const getAllPods = async () => {
   return pods
 }
 
-// const insertEntity = async (entity, databaseName, conflictColumn, returnCol) => {
-//   const parsedEntityForExcluding = entity.length ? entity[0] : entity
-//   const excludedQuery = Object.keys(parsedEntityForExcluding).map(key => `${key} = EXCLUDED.${key}`)
-//   const returnColumn = returnCol ? returnCol : Object.keys(parsedEntityForExcluding)[0]
-//   const conflict = conflictColumn.length ? conflictColumn.join(", ") : conflictColumn
-//   try {
-//     const query = `${db(databaseName).insert(entity).toQuery()} ON CONFLICT(${conflict}) DO UPDATE SET ${excludedQuery.join(", ")} returning ${returnColumn}`
-//     return await db.raw(query)
-//   } catch (e) {
-//     console.error(e)
-//   }
-// }
+const updatePodSpecification = async (identificator, specification) => {
+  try {
+    await db("pods")
+      .where(identificator)
+      .update(specification)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const getSpecificPod = async (identificator) => {
+  try {
+    return await db("pods")
+      .select("*")
+      .where(identificator)
+
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 const updateEntity = async (collection, table, updateScope) => {
   collection = Array.isArray(collection) ? collection : [collection]
   try {
@@ -41,6 +49,7 @@ const updateEntity = async (collection, table, updateScope) => {
     console.error(e)
   }
 }
+
 const insertEntity = async (entity, table) => {
   try {
     return await db(table).insert(entity)
@@ -52,5 +61,7 @@ const insertEntity = async (entity, table) => {
 module.exports = {
   getAllPods,
   insertEntity,
-  updateEntity
+  updateEntity,
+  getSpecificPod,
+  updatePodSpecification,
 }

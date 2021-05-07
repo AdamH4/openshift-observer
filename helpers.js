@@ -1,5 +1,7 @@
 const DB = require("./database/queries")
 const { DATABASES, OPERATIONS } = require("./database/databaseMapper")
+const axios = require('axios')
+const { validNames, yamlToJson } = require("./utils/openApi")
 
 // get build repo URL and return it defaults to empty string ("")
 const findBuildRepoURL = (build) => {
@@ -12,6 +14,23 @@ const findBuildRepoURL = (build) => {
         }
     })
     return URL
+}
+
+const getOpenApiFile = async (objects) => {
+    for (const item of objects) {
+        if (validNames.includes(item.name)) {
+            const response = await axios.get(item.download_url)
+            return response.data
+        }
+    }
+}
+
+// create api endpoint from repo url
+const parseGithubURL = (repoURL) => {
+    const pathSections = new URL(repoURL).pathname.split("/")
+    const repoOwner = pathSections[1]
+    const repoName = pathSections[2]
+    return `https://api.github.com/repos/${repoOwner}/${repoName}/contents`
 }
 
 // parse data from build
@@ -76,11 +95,26 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             break
         case "Build":
             const build = parseBuild(entity)
-            if (operation === OPERATIONS.INSERT) {
-                await DB.insertEntity(build, DATABASES.BUILD)
-            } else if (operation === OPERATIONS.UPDATE) {
-                await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
+            const repoContentURL = parseGithubURL(build.build_source)
+            let res
+            try {
+                res = await axios.get(repoContentURL)
+            } catch (e) {
+                console.error(e)
             }
+            const yamlFile = await getOpenApiFile(res.data)
+            const specification = yamlToJson(yamlFile)
+            const pods = await DB.getSpecificPod({ name: build.pod_name })
+            if (pods.length) {
+                // setInverval here and repeatively check if pods exists
+            }
+            await DB.updatePodSpecification({ name: build.pod_name }, { specification })
+            // if (operation === OPERATIONS.INSERT) {
+            //     await DB.insertEntity(build, DATABASES.BUILD)
+            // } else if (operation === OPERATIONS.UPDATE) {
+            //     await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
+            // }
+
             break
         default:
             console.log("Default -> in switch")
