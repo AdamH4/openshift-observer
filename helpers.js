@@ -75,7 +75,11 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             break
         case "Build":
             const build = parseBuild(entity)
-            await operation(build, DATABASES.BUILD)
+            if (operation === OPERATIONS.INSERT) {
+                await DB.insertEntity(build, DATABASES.BUILD)
+            } else if (operation === OPERATIONS.UPDATE) {
+                await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
+            }
             break
         default:
             console.log("Default -> in switch")

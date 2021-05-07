@@ -49,7 +49,7 @@ app.get('/db', async (req, res) => {
 })
 
 app.get('/api', async (req, res) => {
-    const data = parseAndStoreEntityFromJson(response.items[4], OPERATIONS.UPDATE)
+    const data = parseAndStoreEntityFromJson(response.items[0], OPERATIONS.UPDATE)
     res.json(data)
 })
 

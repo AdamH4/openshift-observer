@@ -22,35 +22,26 @@ const getAllPods = async () => {
 //     console.error(e)
 //   }
 // }
-const updateEntity = async (entity, databaseName, updateScope) => {
+const updateEntity = async (collection, table, updateScope) => {
+  collection = Array.isArray(collection) ? collection : [collection]
   try {
-    return db.transaction(trx => {
-      const queries = entity.map(tuple =>
-        (table)
-          .where('id', tuple.id)
-          .update(tuple)
-          .transacting(trx)
-      );
-      return Promise.all(queries)
-        .then(trx.commit)
-        .catch(trx.rollback);
-    });
-    const transaction = await db.transaction()
-    if (Array.isArray(entity)) {
-      entity.forEach(item => {
-        transaction(databaseName)
-          .update(item)
-          .where(updateScope)
-      })
-    }
-    return await db(databaseName).update(entity).where(updateScope)
+    const trx = await db.transaction()
+    const queries = collection.map(tuple =>
+      db(table)
+        .where(updateScope)
+        .update(tuple)
+        .transacting(trx)
+    )
+    return Promise.all(queries)
+      .then(trx.commit)
+      .catch(trx.rollback)
   } catch (e) {
     console.error(e)
   }
 }
-const insertEntity = async (entity, databaseName) => {
+const insertEntity = async (entity, table) => {
   try {
-    return await db(databaseName).insert(entity)
+    return await db(table).insert(entity)
   } catch (e) {
     console.error(e)
   }
@@ -58,5 +49,6 @@ const insertEntity = async (entity, databaseName) => {
 
 module.exports = {
   getAllPods,
-  insertEntity
+  insertEntity,
+  updateEntity
 }
