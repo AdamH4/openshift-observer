@@ -48,7 +48,7 @@ app.get('/db', async (req, res) => {
 })
 
 app.get('/api', async (req, res) => {
-    const data = parseAndStoreEntityFromJson(response.items[4])
+    const data = parseAndStoreEntityFromJson(response.items[4], DB.insertEntity)
     res.json(data)
 })
 

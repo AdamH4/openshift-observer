@@ -27,6 +27,9 @@ const parseBuild = (build) => {
 
 // parse data from replicaSet
 const parseReplicaSet = (replica) => {
+    let ports = []
+    let containers = []
+
     const pod = {
         uid: replica.metadata.uid,
         name: replica.metadata.labels.app,
@@ -35,42 +38,38 @@ const parseReplicaSet = (replica) => {
         status_message: replica.status.phase,
         creation_timestamp: replica.metadata.creationTimestamp,
         replicaset_count: 0,
-        specification: JSON.stringify({ a: "aaeeeea" })
+        specification: {},
     }
-    const containers = replica.spec.containers.map(container => {
-        return {
+    replica.spec.containers.forEach((container, index) => {
+        const uid = pod.uid + "-" + container.name + "-" + index
+        containers.push({
+            uid: uid,
             pod_uid: pod.uid,
             name: container.name,
-        }
+        })
+        ports.push(...container.ports.map(port => {
+            return {
+                container_uid: uid,
+                port: port.containerPort,
+                protocol_name: port.protocol
+            }
+        }))
     })
-    return { pod, containers }
+    return { pod, containers, ports }
 }
 //parse data from api and retrieve them
-const parseAndStoreEntityFromJson = async (entity) => {
+const parseAndStoreEntityFromJson = async (entity, operation) => {
     const entityKind = entity.metadata.ownerReferences[0] ? entity.metadata.ownerReferences[0].kind : "Unknown"
     switch (entityKind) {
         case "ReplicaSet":
-            const { pod, containers } = parseReplicaSet(entity)
-            // const uid = await DB.insertEntity(pod, DATABASES.POD, "name")
-            const response = await DB.insertEntity(containers, DATABASES.CONTAINER, ["pod_uid", "id"])
-            //TODO add array as parameter, watch out it can break insertEntity()
-            // console.log(response)
-            // containers.forEach(async (container) => {
-            //     const containerResponse = await DB.insertEntity(container, DATABASES.CONTAINER)
-            //     console.log(containerResponse)
-            //     container.pods.forEach(async (port) => {
-            //         await DB.insertEntity({
-            //             container_id: container.,
-            //             port: port.containerPort,
-            //             protocol_name: port.protocol
-            //         }, DATABASES.PORT)
-            //     })
-            // })
+            const { pod, containers, ports } = parseReplicaSet(entity)
+            await operation(pod, DATABASES.POD)
+            await operation(containers, DATABASES.CONTAINER)
+            await operation(ports, DATABASES.PORT)
             break
         case "Build":
-            console.log("Parse build")
             const build = parseBuild(entity)
-            DB.insertEntity(build, DATABASES.BUILD)
+            await operation(build, DATABASES.BUILD)
             break
         default:
             console.log("Default -> in switch")

@@ -17,15 +17,12 @@ exports.up = function (knex) {
       table.integer("build_order")
     })
     .createTable("containers", table => {
-      table.increments("id")
+      table.text("uid").primary()
       table.text("pod_uid").references("uid").inTable("pods")
       table.text("name")
-      table.primary(["id", "pod_uid"])
-      //TODO is this necesarry?
     })
     .createTable("ports", table => {
-      table.increments("id").primary()
-      table.integer("container_id").references("id").inTable("containers")
+      table.text("container_uid").references("uid").inTable("containers")
       table.integer("port")
       table.text("protocol_name")
     })
