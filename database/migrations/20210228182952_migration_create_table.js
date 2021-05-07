@@ -22,10 +22,10 @@ exports.up = function (knex) {
       table.text("name")
     })
     .createTable("ports", table => {
+      table.text("uid").primary()
       table.text("container_uid").references("uid").inTable("containers")
       table.integer("port")
       table.text("protocol_name")
-      table.primary(["port", "container_uid"])
     })
 }
 

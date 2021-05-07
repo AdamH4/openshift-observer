@@ -40,8 +40,8 @@ const parseReplicaSet = (replica) => {
         replicaset_count: 0,
         specification: {},
     }
-    replica.spec.containers.forEach((container, index) => {
-        const uid = pod.uid + "-" + container.name + "-" + index
+    replica.spec.containers.forEach(container => {
+        const uid = pod.uid + "-container-" + container.name
         containers.push({
             uid: uid,
             pod_uid: pod.uid,
@@ -49,6 +49,7 @@ const parseReplicaSet = (replica) => {
         })
         ports.push(...container.ports.map(port => {
             return {
+                uid: `${uid}-port-${port.protocol}`,
                 container_uid: uid,
                 port: port.containerPort,
                 protocol_name: port.protocol
@@ -68,9 +69,9 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.insertEntity(containers, DATABASES.CONTAINER)
                 await DB.insertEntity(ports, DATABASES.PORT)
             } else if (operation === OPERATIONS.UPDATE) {
-                await DB.updateEntity(pod, DATABASES.POD, { uid: pod.uid })
-                await DB.updateEntity(containers, DATABASES.CONTAINER)
-                await DB.updateEntity(ports, DATABASES.PORT)
+                await DB.updateEntity(pod, DATABASES.POD, "uid")
+                await DB.updateEntity(containers, DATABASES.CONTAINER, "uid")
+                await DB.updateEntity(ports, DATABASES.PORT, "uid")
             }
             break
         case "Build":

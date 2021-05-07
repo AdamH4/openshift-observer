@@ -1,3 +1,4 @@
+const { update } = require('./config.js')
 const db = require('./config.js')
 
 const getAllPods = async () => {
@@ -26,12 +27,13 @@ const updateEntity = async (collection, table, updateScope) => {
   collection = Array.isArray(collection) ? collection : [collection]
   try {
     const trx = await db.transaction()
-    const queries = collection.map(tuple =>
-      db(table)
-        .where(updateScope)
+    const queries = collection.map(tuple => {
+      const updateObject = { [updateScope]: tuple[updateScope] }
+      return db(table)
+        .where(updateObject)
         .update(tuple)
         .transacting(trx)
-    )
+    })
     return Promise.all(queries)
       .then(trx.commit)
       .catch(trx.rollback)
