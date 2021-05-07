@@ -1,5 +1,5 @@
 const DB = require("./database/queries")
-const { DATABASES } = require("./database/databaseMapper")
+const { DATABASES, OPERATIONS } = require("./database/databaseMapper")
 
 // get build repo URL and return it defaults to empty string ("")
 const findBuildRepoURL = (build) => {
@@ -63,9 +63,15 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
     switch (entityKind) {
         case "ReplicaSet":
             const { pod, containers, ports } = parseReplicaSet(entity)
-            await operation(pod, DATABASES.POD)
-            await operation(containers, DATABASES.CONTAINER)
-            await operation(ports, DATABASES.PORT)
+            if (operation === OPERATIONS.INSERT) {
+                await DB.insertEntity(pod, DATABASES.POD)
+                await DB.insertEntity(containers, DATABASES.CONTAINER)
+                await DB.insertEntity(ports, DATABASES.PORT)
+            } else if (operation === OPERATIONS.UPDATE) {
+                await DB.updateEntity(pod, DATABASES.POD, { uid: pod.uid })
+                await DB.updateEntity(containers, DATABASES.CONTAINER)
+                await DB.updateEntity(ports, DATABASES.PORT)
+            }
             break
         case "Build":
             const build = parseBuild(entity)

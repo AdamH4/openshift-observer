@@ -24,6 +24,25 @@ const getAllPods = async () => {
 // }
 const updateEntity = async (entity, databaseName, updateScope) => {
   try {
+    return db.transaction(trx => {
+      const queries = entity.map(tuple =>
+        (table)
+          .where('id', tuple.id)
+          .update(tuple)
+          .transacting(trx)
+      );
+      return Promise.all(queries)
+        .then(trx.commit)
+        .catch(trx.rollback);
+    });
+    const transaction = await db.transaction()
+    if (Array.isArray(entity)) {
+      entity.forEach(item => {
+        transaction(databaseName)
+          .update(item)
+          .where(updateScope)
+      })
+    }
     return await db(databaseName).update(entity).where(updateScope)
   } catch (e) {
     console.error(e)

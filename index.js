@@ -7,6 +7,7 @@ const DB = require('./database/queries')
 const knex = require('./database/config')
 const response = require('./example-response.json')
 const { parseAndStoreEntityFromJson } = require("./helpers")
+const { OPERATIONS } = require("./database/databaseMapper")
 const k8s = require('@kubernetes/client-node');
 // const bodyParser = require('body-parser')
 // app.use(bodyParser)
@@ -48,7 +49,7 @@ app.get('/db', async (req, res) => {
 })
 
 app.get('/api', async (req, res) => {
-    const data = parseAndStoreEntityFromJson(response.items[4], DB.insertEntity)
+    const data = parseAndStoreEntityFromJson(response.items[4], OPERATIONS.UPDATE)
     res.json(data)
 })
 

@@ -5,6 +5,12 @@ const DATABASES = {
     PORT: "ports"
 }
 
+const OPERATIONS = {
+    UPDATE: "update",
+    INSERT: "insert"
+}
+
 module.exports = {
-    DATABASES
+    DATABASES,
+    OPERATIONS
 }
