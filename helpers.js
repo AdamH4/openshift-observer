@@ -106,7 +106,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             const specification = yamlToJson(yamlFile)
             const pods = await DB.getSpecificPod({ name: build.pod_name })
             if (pods.length) {
-                // setInverval here and repeatively check if pods exists
+                //TODO setInverval here and repeatively check if pods exists
             }
             await DB.updatePodSpecification({ name: build.pod_name }, { specification })
             // if (operation === OPERATIONS.INSERT) {
