@@ -1,13 +1,14 @@
 const db = require('./config.js')
 
 const getAllPods = async () => {
-  let pods = []
   try {
-    pods = await db("pods").select()
+    return await db("pods")
+      .select("*")
+      .join("builds", "builds.pod_name", "pods.name")
+    // TODO teraz treba hydratovat data
   } catch (e) {
     console.error(e)
   }
-  return pods
 }
 
 const updatePodSpecification = async (identificator, specification) => {
