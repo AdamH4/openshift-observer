@@ -16,6 +16,7 @@ const findBuildRepoURL = (build) => {
     return URL
 }
 
+// find openApi in github folder and retrieve it 
 const getOpenApiFile = async (objects) => {
     for (const item of objects) {
         if (validNames.includes(item.name)) {
@@ -23,6 +24,18 @@ const getOpenApiFile = async (objects) => {
             return response.data
         }
     }
+}
+
+const getBuildOpenApiSpecification = async (repoURL) => {
+    const repoContentURL = parseGithubURL(repoURL)
+    let res
+    try {
+        res = await axios.get(repoContentURL)
+    } catch (e) {
+        console.error(e)
+    }
+    const yamlFile = await getOpenApiFile(res.data)
+    return yamlToJson(yamlFile)
 }
 
 // create api endpoint from repo url
@@ -95,25 +108,22 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             break
         case "Build":
             const build = parseBuild(entity)
-            const repoContentURL = parseGithubURL(build.build_source)
-            let res
-            try {
-                res = await axios.get(repoContentURL)
-            } catch (e) {
-                console.error(e)
-            }
-            const yamlFile = await getOpenApiFile(res.data)
-            const specification = yamlToJson(yamlFile)
-            const pods = await DB.getSpecificPod({ name: build.pod_name })
-            if (pods.length) {
-                //TODO setInverval here and repeatively check if pods exists
-            }
-            await DB.updatePodSpecification({ name: build.pod_name }, { specification })
-            // if (operation === OPERATIONS.INSERT) {
-            //     await DB.insertEntity(build, DATABASES.BUILD)
-            // } else if (operation === OPERATIONS.UPDATE) {
-            //     await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
-            // }
+            let retries = 5
+            const waitingInterval = setInterval(async () => {
+                const pods = await DB.getSpecificPod({ name: build.pod_name })
+                if (pods.length) { // pod exists
+                    const specification = await getBuildOpenApiSpecification(build.build_source)
+                    await DB.updatePodSpecification({ name: build.pod_name }, { specification })
+                    if (operation === OPERATIONS.INSERT) {
+                        await DB.insertEntity(build, DATABASES.BUILD)
+                    } else if (operation === OPERATIONS.UPDATE) {
+                        await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
+                    }
+                    clearInterval(waitingInterval)
+                }
+                if (!retries) clearInterval(waitingInterval)
+                retries--
+            }, 2000)
 
             break
         default:

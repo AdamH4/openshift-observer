@@ -47,9 +47,9 @@ app.get('/db', async (req, res) => {
     res.json(pods)
 })
 
-app.get('/api', async (req, res) => {
-    const data = parseAndStoreEntityFromJson(response.items[0], OPERATIONS.INSERT)
-    res.json(data)
+app.get('/api', (req, res) => {
+    response.items.forEach(async (item) => await parseAndStoreEntityFromJson(item, OPERATIONS.INSERT))
+    res.status(200).send("hallo Adam")
 })
 
 app.get("/test/route", (req, res) => {
