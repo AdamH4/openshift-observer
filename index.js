@@ -10,6 +10,11 @@ const { OPERATIONS } = require("./database/databaseMapper")
 const k8s = require('@kubernetes/client-node');
 // const bodyParser = require('body-parser')
 // app.use(bodyParser)
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    next()
+})
 
 app.use(express.json())
 app.use(express.static('client/dist'))
@@ -39,7 +44,8 @@ const refreshingPodsTask = cron.schedule("*/30 * * * *", async () => {
  *     description: Greeting message.
  */
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/public/index.html');
+    res.send("Ahoj")
+    // res.sendFile(__dirname + '/public/index.html');
 })
 
 app.get('/api', async (req, res) => {
@@ -112,7 +118,7 @@ app.get("/socket", async (req, res) => {
     res.status(200).send("NOICE")
 })
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8081
 
 app.listen(port, async function () {
     // let retries = 5

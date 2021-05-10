@@ -7,7 +7,7 @@
     </div>
     <div class="next__iteration" v-if="Object.keys(compoundEntries).length">
         <div v-for="(value,key,index) in compoundEntries" :key="index">
-            <div @click="open[index] = !open[index]" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" class="parent">
+            <div @click="open[index] = !open[index]" class="parent">
                 <OpeningArrow :open="open[index]" />
                 <span class="parentText">
                     {{ key }}

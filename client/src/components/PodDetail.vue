@@ -39,7 +39,7 @@ import TreeMenu from '@/components/TreeMenu'
 import Divider from '@/components/Divider'
 export default {
     components: {
-        TreeMenu, Divider
+        Divider, TreeMenu
     },
     props: {
         pod: Object,
