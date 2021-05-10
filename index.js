@@ -51,7 +51,6 @@ app.get('/api', async (req, res) => {
     // response.items.forEach(async (item) => await parseAndStoreEntityFromJson(item, OPERATIONS.INSERT))
     const pods = await DB.getAllPods()
 
-
     res.status(200).json(pods)
 })
 
