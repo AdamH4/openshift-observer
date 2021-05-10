@@ -42,11 +42,6 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 })
 
-app.get('/db', async (req, res) => {
-    const pods = await DB.getAllPods()
-    res.json(pods)
-})
-
 app.get('/api', async (req, res) => {
     // response.items.forEach(async (item) => await parseAndStoreEntityFromJson(item, OPERATIONS.INSERT))
     const pods = await DB.getAllPods()
@@ -54,27 +49,21 @@ app.get('/api', async (req, res) => {
     res.status(200).json(pods)
 })
 
-app.get("/test/route", (req, res) => {
-    res.json({
-        message: "Succesfull test"
-    })
-})
+// app.get('/migrate', () => {
+//     knex.migrate
+//         .latest()
+//         .then(res => {
+//             console.log(res)
+//         })
+// })
 
-app.get('/migrate', () => {
-    knex.migrate
-        .latest()
-        .then(res => {
-            console.log(res)
-        })
-})
-
-app.post('/pod/insert', async (req, res) => {
-    await DB.insertPod({
-        name: req.body.name,
-        oas: JSON.stringify(req.body.oas)
-    })
-    res.json(req.body)
-})
+// app.post('/pod/insert', async (req, res) => {
+//     await DB.insertPod({
+//         name: req.body.name,
+//         oas: JSON.stringify(req.body.oas)
+//     })
+//     res.json(req.body)
+// })
 
 /*
  * @api [get] /pods
@@ -84,27 +73,14 @@ app.post('/pod/insert', async (req, res) => {
  *     description: Return OAS of all pods.
  */
 app.get('/pods', async (req, res) => {
-    // const pods = await DB.getAllPods()
-    // if (pods.length) res.json(pods)
-
-    // const freshPods = await getFreshPods()
-    // if (!pods.length) res.json(freshPods)
-    // savePods(freshPods)
-    // freshPods.forEach(async (pod) => {
-    //     const podName = Object.keys(pod)[0]
-    //     await DB.insertPod({
-    //         name: podName,
-    //         oas: JSON.stringify(pod[podName].specification),
-    //         port: pod[podName].port,
-    //         host: pod[podName].host,
-    //     })
-    // })
+    const pods = await DB.getAllPods()
+    res.status(200).json(pods)
 })
 
 app.get("/socket", async (req, res) => {
-    const kc = new k8s.KubeConfig();
+    const kc = new k8s.KubeConfig()
     kc.loadFromDefault()
-    const watch = new k8s.Watch(kc);
+    const watch = new k8s.Watch(kc)
     watch.watch('/api/v1/namespaces/monitoring-cluster/pods',
         // optional query parameters can go here.
         {
@@ -135,83 +111,6 @@ app.get("/socket", async (req, res) => {
         })
     res.status(200).send("NOICE")
 })
-// async function savePods(pods) {
-//     pods.forEach(async (pod) => {
-//         const podName = Object.keys(pod)[0]
-//         await DB.insertPod({
-//             name: podName,
-//             oas: JSON.stringify(pod[podName].specification),
-//             port: pod[podName].port,
-//             host: pod[podName].host,
-//         })
-//     })
-// }
-
-// async function getFreshPods() {
-//     let envOfPods = filterPodEnvVariables()
-//     let oas = []
-//     let documents = []
-//     let podNames = []
-//     Object.keys(envOfPods).forEach(key => {
-//         const document = getOASFromPod(`${envOfPods[key].host}:${envOfPods[key].port}`)
-//         podNames.push(key)
-//         documents.push(document)
-//         oas.push({
-//             [key]: {
-//                 port: envOfPods[key].port,
-//                 host: envOfPods[key].host,
-//             }
-//         })
-//     })
-//     const docs = await Promise.allSettled(documents)
-//     let index = 0
-//     for (let doc of docs) {
-//         if (doc.status === 'fulfilled') {
-//             oas[index][podNames[index]].specification = doc.value
-//         } else {
-//             oas[index][podNames[index]].specification = {}
-//         }
-//         index += 1
-//     }
-//     return oas
-// }
-
-// async function getOASFromPod(url) {
-//     let response
-//     try {
-//         return await axios.get(`http://${url}/openapi.json`)
-//     } catch (err) {
-//         try {
-//             response = await axios.get(`http://${url}/openapi.yaml`)
-//         } catch (error) {
-//             return {}
-//         }
-//     }
-//     return yaml.safeLoad(response.data)
-// }
-
-// function filterPodEnvVariables() {
-//     let enviromentOpenshiftVariables = {}
-//     Object.keys(process.env).forEach(key => {
-//         const envKey = String(key)
-//         if (envKey.endsWith("SERVICE_PORT") && !(envKey.includes("KUBERNETES") || envKey.includes("OPENSHIFT_OBSERVER"))) {
-//             const keyIndex = envKey.indexOf("SERVICE_PORT")
-//             const key = envKey.slice(0, keyIndex - 1)
-//             if (enviromentOpenshiftVariables[key] === undefined) {
-//                 enviromentOpenshiftVariables[key] = {}
-//             }
-//             enviromentOpenshiftVariables[key].port = process.env[envKey]
-//         } else if (envKey.endsWith("SERVICE_HOST") && !(envKey.includes("KUBERNETES") || envKey.includes("OPENSHIFT_OBSERVER"))) {
-//             const keyIndex = envKey.indexOf("SERVICE_HOST")
-//             const key = envKey.slice(0, keyIndex - 1)
-//             if (enviromentOpenshiftVariables[key] === undefined) {
-//                 enviromentOpenshiftVariables[key] = {}
-//             }
-//             enviromentOpenshiftVariables[key].host = process.env[envKey]
-//         }
-//     })
-//     return enviromentOpenshiftVariables
-// }
 
 const port = process.env.PORT || 8080
 
