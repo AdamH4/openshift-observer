@@ -125,11 +125,11 @@ app.listen(port, async function () {
     while (retries) {
         try {
             await knex.migrate.latest()
-            await knex.seed.run()
             // watchPods()
             break
         } catch (error) {
             retries--
+            console.error(error)
             console.log(`Number of retries left: ${retries}`)
             await new Promise(res => setTimeout(res, 5000))
         }
