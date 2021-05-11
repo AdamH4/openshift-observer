@@ -109,7 +109,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.updateEntity(ports, DATABASES.PORT, "uid")
                 console.log("Success update")
             } else if (operation === OPERATIONS.DELETE) {
-                await DB.deleteEntity({ uid: pod.uid }, DATABASES.POD)
+                await DB.deleteEntity({ uid: pod.uid, name: pod.name }, DATABASES.POD)
                 console.log("Success delete")
             }
             break
@@ -117,7 +117,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             const build = parseBuild(entity)
             let retries = 5
             if (operation === OPERATIONS.DELETE) {
-                await DB.deleteEntity({ uid: build.uid }, DATABASES.BUILD)
+                await DB.deleteEntity({ uid: build.uid, pod_name: build.pod_name }, DATABASES.BUILD)
                 console.log("Success delete")
                 return
             }
