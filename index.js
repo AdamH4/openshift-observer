@@ -94,20 +94,19 @@ const watchPods = () => {
     watch.watch('/api/v1/namespaces/monitoring-cluster/pods', { allowWatchBookmarks: true },
         (type, apiObj, watchObj) => {
             if (type === 'ADDED') {
-                console.log('new object:')
-                parseAndStoreEntityFromJson(apiObj, OPERATIONS.INSERT)
+                console.log('new object: ' + apiObj.metadata.name)
+                // parseAndStoreEntityFromJson(apiObj, OPERATIONS.INSERT)
             } else if (type === 'MODIFIED') {
-                console.log('changed object:')
-                parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
+                console.log('changed object: ' + apiObj.metadata.name)
+                // parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
             } else if (type === 'DELETED') {
-                console.log('deleted object:')
-                parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
+                console.log('deleted object: ' + apiObj.metadata.name)
+                // parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
             } else if (type === 'BOOKMARK') {
                 console.log(`bookmark: ${watchObj.metadata.resourceVersion}`)
             } else {
                 console.log('unknown type: ' + type)
             }
-            console.log(apiObj.metadata.name)
         },
         // done callback is called if the watch terminates normally
         (err) => {
@@ -125,7 +124,7 @@ app.listen(port, async function () {
     let retries = 5
     while (retries) {
         try {
-            await knex.migrate.latest()
+            // await knex.migrate.latest()
             watchPods()
             break
         } catch (error) {
