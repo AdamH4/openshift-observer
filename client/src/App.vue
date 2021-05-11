@@ -45,7 +45,7 @@ export default {
   async mounted(){
       const app = getCurrentInstance()
       const axios = app.appContext.config.globalProperties.axios
-      const response = await axios.get("http://localhost:8081/api")
+      const response = await axios.get("/api")
       this.pods = response.data.map(pod =>{
         const label = pod.name
         return {...pod, label}
