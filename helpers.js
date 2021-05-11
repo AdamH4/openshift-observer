@@ -127,7 +127,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
 
             break
         default:
-            console.log("Default -> in switch")
+            console.log("Default -> in switch " + entityKind)
             break
     }
 }
