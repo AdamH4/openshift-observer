@@ -53,7 +53,6 @@ const parseGithubURL = (repoURL) => {
     const repoOwner = pathSections[1]
     const repoName = pathSections[2]
     return [repoOwner, repoName]
-    // return `https://api.github.com/repos/${repoOwner}/${repoName}/contents`
 }
 
 // parse data from build
@@ -157,5 +156,4 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
 
 module.exports = {
     parseAndStoreEntityFromJson,
-    getBuildOpenApiSpecification
 }

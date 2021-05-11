@@ -87,11 +87,6 @@ app.get("/socket", async (req, res) => {
     res.status(200).send("Socket under construction")
 })
 
-app.get("/github", async (req, res) => {
-    console.log(await getBuildOpenApiSpecification("https://github.com/AdamH4/OSN-sanimals"))
-    res.send("ahoj")
-})
-
 const watchPods = () => {
     const kc = new k8s.KubeConfig()
     kc.loadFromDefault()
@@ -125,18 +120,18 @@ const watchPods = () => {
 const port = process.env.PORT || 8080
 
 app.listen(port, async function () {
-    // let retries = 5
-    // while (retries) {
-    //     try {
-    //         await knex.migrate.latest()
-    //         watchPods()
-    //         break
-    //     } catch (error) {
-    //         retries--
-    //         console.error(error)
-    //         console.log(`Number of retries left: ${retries}`)
-    //         await new Promise(res => setTimeout(res, 5000))
-    //     }
-    // }
+    let retries = 5
+    while (retries) {
+        try {
+            await knex.migrate.latest()
+            watchPods()
+            break
+        } catch (error) {
+            retries--
+            console.error(error)
+            console.log(`Number of retries left: ${retries}`)
+            await new Promise(res => setTimeout(res, 5000))
+        }
+    }
 })
 
