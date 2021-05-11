@@ -124,6 +124,7 @@ app.listen(port, async function () {
     let retries = 5
     while (retries) {
         try {
+            await knex.migrate.rollback()
             await knex.migrate.latest()
             watchPods()
             break
