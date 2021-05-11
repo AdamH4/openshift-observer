@@ -114,7 +114,7 @@ const watchPods = () => {
         })
         .then((req) => {
             // watch returns a request object which you can use to abort the watch.
-            setTimeout(() => { req.abort(); }, 10 * 1000)
+            // setTimeout(() => { req.abort(); }, 10 * 1000)
         })
 }
 
