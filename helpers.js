@@ -70,7 +70,7 @@ const parseReplicaSet = (replica) => {
         status_message: replica.status.phase,
         creation_timestamp: replica.metadata.creationTimestamp,
         replicaset_count: 0,
-        specification: {},
+        specification: JSON.stringify({}),
     }
     replica.spec.containers.forEach(container => {
         const uid = pod.uid + "-container-" + container.name
@@ -112,8 +112,8 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             const waitingInterval = setInterval(async () => {
                 const pods = await DB.getSpecificPod({ name: build.pod_name })
                 if (pods.length) { // pod exists
-                    const specification = await getBuildOpenApiSpecification(build.build_source)
-                    await DB.updatePodSpecification({ name: build.pod_name }, { specification })
+                    const specification = JSON.stringify(await getBuildOpenApiSpecification(build.build_source))
+                    await DB.updatePodColumn({ name: build.pod_name }, { specification: specification })
                     if (operation === OPERATIONS.INSERT) {
                         await DB.insertEntity(build, DATABASES.BUILD)
                     } else if (operation === OPERATIONS.UPDATE) {

@@ -87,7 +87,7 @@ const getAllPods = async () => {
   }
 }
 
-const updatePodSpecification = async (identificator, specification) => {
+const updatePodColumn = async (identificator, specification) => {
   try {
     await db("pods")
       .where(identificator)
@@ -140,5 +140,5 @@ module.exports = {
   insertEntity,
   updateEntity,
   getSpecificPod,
-  updatePodSpecification,
+  updatePodColumn,
 }
