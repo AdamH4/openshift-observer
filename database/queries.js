@@ -127,11 +127,11 @@ const updateEntity = async (collection, table, updateScope) => {
   }
 }
 
-const insertEntity = async (entity, table) => {
+const insertEntity = async (entity, table, conflictArray = []) => {
   try {
     return await db(table)
       .insert(entity)
-      .onConflict()
+      .onConflict(conflictArray)
       .ignore()
   } catch (e) {
     console.error(e)
