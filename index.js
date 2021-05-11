@@ -126,7 +126,7 @@ app.listen(port, async function () {
         try {
             await knex.migrate.latest()
             await knex.seed.run()
-            watchPods()
+            // watchPods()
             break
         } catch (error) {
             retries--
