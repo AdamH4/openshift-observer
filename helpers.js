@@ -24,6 +24,7 @@ const getOpenApiFile = async (objects) => {
             return response.data
         }
     }
+    return null
 }
 
 const getBuildOpenApiSpecification = async (repoURL) => {
@@ -35,7 +36,8 @@ const getBuildOpenApiSpecification = async (repoURL) => {
         console.error(e)
     }
     const yamlFile = await getOpenApiFile(res.data)
-    return yamlToJson(yamlFile)
+    if (yamlFile) return yamlToJson(yamlFile)
+    return {}
 }
 
 // create api endpoint from repo url
