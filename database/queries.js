@@ -137,10 +137,12 @@ const deleteEntity = async (deleteBy, table) => {
 
 }
 
-const insertEntity = async (entity, table) => {
+const insertEntity = async (entity, table, conflictingCols = ["uid"]) => {
   try {
     return await db(table)
       .insert(entity)
+      .onConflict(conflictingCols)
+      .ignore()
   } catch (e) {
     console.error(e)
   }

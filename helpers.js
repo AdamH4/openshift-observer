@@ -74,6 +74,7 @@ const parseReplicaSet = (replica) => {
     const pod = {
         uid: replica.metadata.uid,
         name: replica.metadata.labels.app,
+        full_name: replica.metadata.name,
         url: `http://${replica.metadata.labels.app}-${replica.metadata.namespace}.apps-crc.testing`,
         cluster_name: replica.metadata.namespace,
         status_message: replica.status.phase,
@@ -116,7 +117,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.updateEntity(ports, DATABASES.PORT, "uid")
                 console.log("Success update")
             } else if (operation === OPERATIONS.DELETE) {
-                await DB.deleteEntity({ uid: pod.uid, name: pod.name }, DATABASES.POD)
+                await DB.deleteEntity({ uid: pod.uid, full_name: pod.full_name }, DATABASES.POD)
                 console.log("Success delete")
             }
             break
