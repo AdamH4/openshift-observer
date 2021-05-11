@@ -126,6 +126,16 @@ const updateEntity = async (collection, table, updateScope) => {
     console.error(e)
   }
 }
+const deleteEntity = async (deleteBy, table) => {
+  try {
+    return await db(table)
+      .where(deleteBy)
+      .del()
+  } catch (e) {
+    console.error(e)
+  }
+
+}
 
 const insertEntity = async (entity, table) => {
   try {
@@ -142,4 +152,5 @@ module.exports = {
   updateEntity,
   getSpecificPod,
   updatePodColumn,
+  deleteEntity,
 }

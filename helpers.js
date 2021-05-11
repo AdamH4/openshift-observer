@@ -106,11 +106,17 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.updateEntity(pod, DATABASES.POD, "uid")
                 await DB.updateEntity(containers, DATABASES.CONTAINER, "uid")
                 await DB.updateEntity(ports, DATABASES.PORT, "uid")
+            } else if (operation === OPERATIONS.DELETE) {
+                await DB.deleteEntity({ uid: pod.uid }, DATABASES.POD)
             }
             break
         case "Build":
             const build = parseBuild(entity)
             let retries = 5
+            if (operation === OPERATIONS.DELETE) {
+                await DB.deleteEntity({ uid: build.uid }, DATABASES.BUILD)
+                return
+            }
             const waitingInterval = setInterval(async () => {
                 const pods = await DB.getSpecificPod({ name: build.pod_name })
                 if (pods.length) { // pod exists

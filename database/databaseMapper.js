@@ -7,10 +7,11 @@ const DATABASES = {
 
 const OPERATIONS = {
     UPDATE: "update",
-    INSERT: "insert"
+    INSERT: "insert",
+    DELETE: "delete",
 }
 
 module.exports = {
     DATABASES,
-    OPERATIONS
+    OPERATIONS,
 }

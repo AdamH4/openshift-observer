@@ -101,6 +101,7 @@ const watchPods = () => {
                 parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
             } else if (type === 'DELETED') {
                 console.log('deleted object:')
+                parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
             } else if (type === 'BOOKMARK') {
                 console.log(`bookmark: ${watchObj.metadata.resourceVersion}`)
             } else {
