@@ -97,9 +97,9 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
         case "ReplicaSet":
             const { pod, containers, ports } = parseReplicaSet(entity)
             if (operation === OPERATIONS.INSERT) {
-                await DB.insertEntity(pod, DATABASES.POD, ["name", "uid"])
-                await DB.insertEntity(containers, DATABASES.CONTAINER, ["uid"])
-                await DB.insertEntity(ports, DATABASES.PORT, ["uid"])
+                await DB.insertEntity(pod, DATABASES.POD)
+                await DB.insertEntity(containers, DATABASES.CONTAINER)
+                await DB.insertEntity(ports, DATABASES.PORT)
             } else if (operation === OPERATIONS.UPDATE) {
                 await DB.updateEntity(pod, DATABASES.POD, "uid")
                 await DB.updateEntity(containers, DATABASES.CONTAINER, "uid")
@@ -115,7 +115,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                     const specification = JSON.stringify(await getBuildOpenApiSpecification(build.build_source))
                     await DB.updatePodColumn({ name: build.pod_name }, { specification: specification })
                     if (operation === OPERATIONS.INSERT) {
-                        await DB.insertEntity(build, DATABASES.BUILD, ["uid"])
+                        await DB.insertEntity(build, DATABASES.BUILD)
                     } else if (operation === OPERATIONS.UPDATE) {
                         await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
                     }
