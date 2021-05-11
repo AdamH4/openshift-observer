@@ -95,24 +95,23 @@ const watchPods = () => {
         (type, apiObj, watchObj) => {
             if (type === 'ADDED') {
                 console.log('new object: ' + apiObj.metadata.name)
-                // parseAndStoreEntityFromJson(apiObj, OPERATIONS.INSERT)
+                parseAndStoreEntityFromJson(apiObj, OPERATIONS.INSERT)
             } else if (type === 'MODIFIED') {
                 console.log('changed object: ' + apiObj.metadata.name)
-                // parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
+                parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
             } else if (type === 'DELETED') {
                 console.log('deleted object: ' + apiObj.metadata.name)
-                // parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
+                parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
             } else if (type === 'BOOKMARK') {
                 console.log(`bookmark: ${watchObj.metadata.resourceVersion}`)
             } else {
                 console.log('unknown type: ' + type)
             }
         },
-        // done callback is called if the watch terminates normally
         (err) => {
             console.log("DONE:", err)
         })
-        .then((req) => {
+        .then((_) => {
             // watch returns a request object which you can use to abort the watch.
             // setTimeout(() => { req.abort(); }, 10 * 1000)
         })
