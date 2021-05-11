@@ -45,7 +45,7 @@ export default {
   async mounted(){
       const app = getCurrentInstance()
       const axios = app.appContext.config.globalProperties.axios
-      const response = await axios.get("/api")
+      const response = await axios.get("/pods")
       this.pods = response.data.map(pod =>{
         const label = pod.name
         return {...pod, label}
@@ -73,21 +73,12 @@ export default {
   computed: {
     accordionItems(){
       return this.pods.map(pod => {
+        const paths = pod.specification.paths ? Object.keys(pod.specification?.paths).map(path => path) : []
         return {
           name: pod.label,
           id: pod.id,
-          paths: Object.keys(pod.specification?.paths).map(path => path)
+          paths: paths
         }
-        
-        // Object.keys(pod).forEach(key => {
-        //   const selectedAttribute = pod[key]
-        //   if(typeof selectedAttribute === 'object'){
-        //       one.paths = selectedAttribute.specification.paths
-        //         ? Object.keys(selectedAttribute.specification?.paths).map(path => path)
-        //         : []
-        //   }
-        // })
-        // return one
       })
     }
   }
