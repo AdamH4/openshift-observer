@@ -102,12 +102,15 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.insertEntity(pod, DATABASES.POD)
                 await DB.insertEntity(containers, DATABASES.CONTAINER)
                 await DB.insertEntity(ports, DATABASES.PORT)
+                console.log("Success insert")
             } else if (operation === OPERATIONS.UPDATE) {
                 await DB.updateEntity(pod, DATABASES.POD, "uid")
                 await DB.updateEntity(containers, DATABASES.CONTAINER, "uid")
                 await DB.updateEntity(ports, DATABASES.PORT, "uid")
+                console.log("Success update")
             } else if (operation === OPERATIONS.DELETE) {
                 await DB.deleteEntity({ uid: pod.uid }, DATABASES.POD)
+                console.log("Success delete")
             }
             break
         case "Build":
@@ -115,6 +118,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             let retries = 5
             if (operation === OPERATIONS.DELETE) {
                 await DB.deleteEntity({ uid: build.uid }, DATABASES.BUILD)
+                console.log("Success delete")
                 return
             }
             const waitingInterval = setInterval(async () => {
@@ -124,8 +128,10 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                     await DB.updatePodColumn({ name: build.pod_name }, { specification: specification })
                     if (operation === OPERATIONS.INSERT) {
                         await DB.insertEntity(build, DATABASES.BUILD)
+                        console.log("Success insert")
                     } else if (operation === OPERATIONS.UPDATE) {
                         await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
+                        console.log("Success update")
                     }
                     clearInterval(waitingInterval)
                 }
