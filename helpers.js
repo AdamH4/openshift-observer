@@ -2,6 +2,7 @@ const DB = require("./database/queries")
 const { DATABASES, OPERATIONS } = require("./database/databaseMapper")
 const axios = require('axios')
 const { validNames, yamlToJson } = require("./utils/openApi")
+const { Octokit } = require('@octokit/rest')
 
 // get build repo URL and return it defaults to empty string ("")
 const findBuildRepoURL = (build) => {
@@ -28,15 +29,21 @@ const getOpenApiFile = async (objects) => {
 }
 
 const getBuildOpenApiSpecification = async (repoURL) => {
-    const repoContentURL = parseGithubURL(repoURL)
+    const [owner, name] = parseGithubURL(repoURL)
     let res
     try {
-        res = await axios.get(repoContentURL)
+        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+        res = await octokit.request('GET /repos/:owner/:repo/contents', {
+            owner: owner,
+            repo: name
+        })
     } catch (e) {
-        console.error(e)
+        return {}
     }
-    const yamlFile = await getOpenApiFile(res.data)
-    if (yamlFile) return yamlToJson(yamlFile)
+    if (res && res.data && res.data.length) {
+        const yamlFile = await getOpenApiFile(res.data)
+        if (yamlFile) return yamlToJson(yamlFile)
+    }
     return {}
 }
 
@@ -45,7 +52,8 @@ const parseGithubURL = (repoURL) => {
     const pathSections = new URL(repoURL).pathname.split("/")
     const repoOwner = pathSections[1]
     const repoName = pathSections[2]
-    return `https://api.github.com/repos/${repoOwner}/${repoName}/contents`
+    return [repoOwner, repoName]
+    // return `https://api.github.com/repos/${repoOwner}/${repoName}/contents`
 }
 
 // parse data from build
@@ -148,5 +156,6 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
 
 
 module.exports = {
-    parseAndStoreEntityFromJson
+    parseAndStoreEntityFromJson,
+    getBuildOpenApiSpecification
 }
