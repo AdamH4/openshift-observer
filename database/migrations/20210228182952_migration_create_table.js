@@ -12,18 +12,18 @@ exports.up = function (knex) {
   })
     .createTable("builds", table => {
       table.text("uid").primary()
-      table.text("pod_name").references("name").inTable("pods")
+      table.text("pod_name").references("name").inTable("pods").onDelete("CASCADE")
       table.text("build_source")
       table.integer("build_order")
     })
     .createTable("containers", table => {
       table.text("uid").primary()
-      table.text("pod_uid").references("uid").inTable("pods")
+      table.text("pod_uid").references("uid").inTable("pods").onDelete("CASCADE")
       table.text("name")
     })
     .createTable("ports", table => {
       table.text("uid").primary()
-      table.text("container_uid").references("uid").inTable("containers")
+      table.text("container_uid").references("uid").inTable("containers").onDelete("CASCADE")
       table.integer("port")
       table.text("protocol_name")
     })
