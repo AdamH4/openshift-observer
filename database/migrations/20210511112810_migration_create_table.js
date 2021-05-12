@@ -13,6 +13,7 @@ exports.up = function (knex) {
     })
         .createTable("builds", table => {
             table.text("uid").primary()
+            table.text("full_name")
             table.text("pod_name").references("name").inTable("pods").onDelete("CASCADE")
             table.text("build_source")
             table.integer("build_order")

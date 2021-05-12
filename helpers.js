@@ -60,6 +60,7 @@ const parseBuild = (build) => {
     const buildName = build.metadata.labels["openshift.io/build.name"]
     return {
         uid: build.metadata.uid,
+        full_name: build.metadata.name,
         pod_name: buildName.slice(0, buildName.lastIndexOf("-")),
         build_source: findBuildRepoURL(build),
         build_order: buildName.slice(buildName.lastIndexOf("-") + 1),
@@ -125,7 +126,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             const build = parseBuild(entity)
             let retries = 5
             if (operation === OPERATIONS.DELETE) {
-                await DB.deleteEntity({ uid: build.uid, pod_name: build.pod_name }, DATABASES.BUILD)
+                await DB.deleteEntity({ uid: build.uid, full_name: build.full_name }, DATABASES.BUILD)
                 console.log("Success delete")
                 return
             }
