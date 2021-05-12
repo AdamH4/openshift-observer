@@ -72,13 +72,14 @@ const getAllPods = async () => {
         "pods.uid AS pod_uid",
         "pods.*",
         "builds.uid AS build_uid",
+        "builds.pod_uid AS build_pod_id",
         "builds.*",
         "ports.uid AS port_uid",
         "ports.*",
         "containers.uid AS container_uid",
         "containers.*"
       ])
-      .join("builds", "builds.pod_name", "pods.name")
+      .join("builds", "builds.pod_uid", "pods.uid")
       .join("containers", "containers.pod_uid", "pods.uid")
       .join("ports", "ports.container_uid", "containers.uid")
     return hydratePods(pods)
