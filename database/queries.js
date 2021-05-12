@@ -102,7 +102,6 @@ const getSpecificPod = async (identificator) => {
     return await db("pods")
       .select("*")
       .where(identificator)
-
   } catch (e) {
     console.error(e)
   }
