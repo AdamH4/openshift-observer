@@ -61,7 +61,6 @@ const hydratePods = (pods) => {
         if (portIndex === -1) results[podIndex].containers[containerIndex].ports.push(createPortInstance(pod))
       }
     }
-    console.log(results)
   })
   return results
 }
