@@ -35,10 +35,10 @@ const createBuildInstance = ({ build_uid, build_source, build_order }) => {
   }
 }
 
-const createContainerInstance = ({ container_uid, port, port_uid, protocol_name }) => {
+const createContainerInstance = ({ container_pod_uid, port, port_uid, protocol_name }) => {
   const portInstance = createPortInstance({ port, port_uid, protocol_name })
   return {
-    uid: container_uid,
+    uid: container_pod_uid,
     ports: isObjectEmpty(portInstance) ? [] : [portInstance]
   }
 }
@@ -54,6 +54,7 @@ const createPortInstance = ({ port_uid, port, protocol_name }) => {
 const hydratePods = (pods) => {
   let results = []
   pods.forEach(pod => {
+    if (!pod.pod_uid) return
     const podIndex = results.findIndex(element => element.uid === pod.pod_uid)
     if (podIndex === -1) {// we didn't found pod, so add it to array
       results.push(createPodInstance(pod))
@@ -62,7 +63,9 @@ const hydratePods = (pods) => {
       if (buildIndex === -1) {
         results[podIndex].builds.push(createBuildInstance(pod))
       }
-      const containerIndex = results[podIndex].containers.findIndex(element => element.uid === pod.container_pod_uid)
+      const containerIndex = results[podIndex].containers.findIndex(element => {
+        return element.uid === pod.container_pod_uid
+      })
       if (containerIndex === -1) {
         results[podIndex].containers.push(createContainerInstance(pod))
       } else {
@@ -79,10 +82,17 @@ const getAllPods = async () => {
     const pods = await db("pods")
       .select([
         "pods.uid AS pod_uid",
-        "pods.*",
+        "pods.cluster_name",
+        "pods.url",
+        "pods.name",
+        "pods.status_message",
+        "pods.creation_timestamp",
+        "pods.replicaset_count",
+        "pods.specification",
         "builds.uid AS build_uid",
         "builds.pod_uid AS build_pod_id",
-        "builds.*",
+        "builds.build_source",
+        "builds.build_order",
         "ports.uid AS port_uid",
         "ports.container_uid AS port_container_uid",
         "ports.port",

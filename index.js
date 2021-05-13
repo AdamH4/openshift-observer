@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const DB = require('./database/queries')
-console.log(DB)
 const knex = require('./database/config')
 // const response = require('./example-response.json')
 const { parseAndStoreEntityFromJson } = require("./helpers")
@@ -90,7 +89,7 @@ app.listen(port, async function () {
     while (retries) {
         try {
             await knex.migrate.latest()
-            watchPods()
+            // watchPods()
             break
         } catch (error) {
             retries--
