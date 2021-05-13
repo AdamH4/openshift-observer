@@ -4,8 +4,8 @@ const app = express()
 // const axios = require('axios')
 const DB = require('./database/queries')
 const knex = require('./database/config')
-const response = require('./example-response.json')
-const { parseAndStoreEntityFromJson, getBuildOpenApiSpecification } = require("./helpers")
+// const response = require('./example-response.json')
+const { parseAndStoreEntityFromJson } = require("./helpers")
 const { OPERATIONS } = require("./database/databaseMapper")
 const k8s = require('@kubernetes/client-node');
 // const bodyParser = require('body-parser')
@@ -116,18 +116,18 @@ app.listen(port, async function () {
     // response.items.forEach(item => {
     //     parseAndStoreEntityFromJson(item, OPERATIONS.INSERT)
     // })
-    // let retries = 5
-    // while (retries) {
-    //     try {
-    //         await knex.migrate.latest()
-    //         watchPods()
-    //         break
-    //     } catch (error) {
-    //         retries--
-    //         console.error(error)
-    //         console.log(`Number of retries left: ${retries}`)
-    //         await new Promise(res => setTimeout(res, 5000))
-    //     }
-    // }
+    let retries = 5
+    while (retries) {
+        try {
+            await knex.migrate.latest()
+            watchPods()
+            break
+        } catch (error) {
+            retries--
+            console.error(error)
+            console.log(`Number of retries left: ${retries}`)
+            await new Promise(res => setTimeout(res, 5000))
+        }
+    }
 })
 
