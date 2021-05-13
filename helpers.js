@@ -20,6 +20,7 @@ const findBuildRepoURL = (build) => {
 // find openApi in github folder and retrieve it 
 const getOpenApiFile = async (objects) => {
     for (const item of objects) {
+        console.log(item.download_url)
         if (validNames.includes(item.name)) {
             const response = await axios.get(item.download_url)
             return response.data
