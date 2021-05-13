@@ -56,7 +56,7 @@ const watchPods = () => {
     const kc = new k8s.KubeConfig()
     kc.loadFromDefault()
     const watch = new k8s.Watch(kc)
-    watch.watch('/api/v1/namespaces/monitoring-cluster/pods', { allowWatchBookmarks: true },
+    watch.watch('/api/v1/namespaces/monitoring-cluster/pods', {},
         async (type, apiObj, watchObj) => {
             if (type === 'ADDED') {
                 console.log('new object: ' + apiObj.metadata.name)
@@ -67,8 +67,6 @@ const watchPods = () => {
             } else if (type === 'DELETED') {
                 console.log('deleted object: ' + apiObj.metadata.name)
                 await parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
-            } else if (type === 'BOOKMARK') {
-                console.log(`bookmark: ${watchObj.metadata.resourceVersion}`)
             } else {
                 console.log('unknown type: ' + type)
             }
