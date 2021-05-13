@@ -1,6 +1,9 @@
 const db = require('./config.js')
+const { isObjectEmpty } = require("../helpers")
 
 const createPodInstance = (pod) => {
+  const buildInstance = createBuildInstance(pod)
+  const containerInstance = createContainerInstance(pod)
   return {
     uid: pod.pod_uid,
     name: pod.name,
@@ -10,8 +13,8 @@ const createPodInstance = (pod) => {
     creationDate: pod.creation_timestamp,
     replicasetCount: pod.replicaset_count,
     specification: pod.specification,
-    builds: [createBuildInstance(pod)],
-    containers: [createContainerInstance(pod)],
+    builds: isObjectEmpty(buildInstance) ? [] : [buildInstance],
+    containers: isObjectEmpty(containerInstance) ? [] : [containerInstance],
   }
 }
 
@@ -24,13 +27,10 @@ const createBuildInstance = ({ build_uid, build_source, build_order }) => {
 }
 
 const createContainerInstance = ({ container_uid, port, port_uid, protocol_name }) => {
+  const portInstance = createPortInstance({ port, port_uid, protocol_name })
   return {
     uid: container_uid,
-    ports: [{
-      uid: port_uid,
-      port,
-      protocol: protocol_name
-    }]
+    ports: isObjectEmpty(portInstance) ? [] : [portInstance]
   }
 }
 
@@ -49,11 +49,11 @@ const hydratePods = (pods) => {
     if (podIndex === -1) {// we didn't found pod, so add it to array
       results.push(createPodInstance(pod))
     } else { // we found pod so update inner properties
-      const buildIndex = results[podIndex].builds.findIndex(element => element.uid === pod.build_uid)
+      const buildIndex = results[podIndex].builds.findIndex(element => element.uid === pod.build_pod_uid)
       if (buildIndex === -1) {
         results[podIndex].builds.push(createBuildInstance(pod))
       }
-      const containerIndex = results[podIndex].containers.findIndex(element => element.uid === pod.container_uid)
+      const containerIndex = results[podIndex].containers.findIndex(element => element.uid === pod.container_pod_uid)
       if (containerIndex === -1) {
         results[podIndex].containers.push(createContainerInstance(pod))
       } else {
@@ -61,6 +61,7 @@ const hydratePods = (pods) => {
         if (portIndex === -1) results[podIndex].containers[containerIndex].ports.push(createPortInstance(pod))
       }
     }
+    console.log(results)
   })
   return results
 }
@@ -75,13 +76,16 @@ const getAllPods = async () => {
         "builds.pod_uid AS build_pod_id",
         "builds.*",
         "ports.uid AS port_uid",
-        "ports.*",
+        "ports.container_uid AS port_container_uid",
+        "ports.port",
+        "ports.protocol_name",
         "containers.uid AS container_uid",
-        "containers.*"
+        "containers.name AS container_name",
+        "containers.pod_uid AS container_pod_uid",
       ])
-      .join("builds", "builds.pod_uid", "pods.uid")
-      .join("containers", "containers.pod_uid", "pods.uid")
-      .join("ports", "ports.container_uid", "containers.uid")
+      .leftJoin("builds", "builds.pod_uid", "pods.uid")
+      .leftJoin("containers", "containers.pod_uid", "pods.uid")
+      .leftJoin("ports", "ports.container_uid", "containers.uid")
     return hydratePods(pods)
   } catch (e) {
     console.error(e)

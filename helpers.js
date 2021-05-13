@@ -67,6 +67,15 @@ const parseBuild = (build) => {
     }
 }
 
+// check if object is empty
+const isObjectEmpty = (obj) => {
+    return Object.values(obj).every(propValue => {
+        if (propValue === null) return true
+        if (Array.isArray(propValue) && propValue.length === 0) return true
+        if (typeof propValue === 'object') return isObjectEmpty(propValue)
+    })
+}
+
 // parse data from replicaSet
 const parseReplicaSet = (replica) => {
     let ports = []
@@ -160,4 +169,5 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
 
 module.exports = {
     parseAndStoreEntityFromJson,
+    isObjectEmpty,
 }
