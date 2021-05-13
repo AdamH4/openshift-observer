@@ -103,9 +103,10 @@ const updatePodColumn = async (identificator, specification) => {
 
 const getSpecificPod = async (identificator) => {
   try {
-    return await db("pods")
+    const pod = await db("pods")
       .select("*")
       .where(identificator)
+    return pod
   } catch (e) {
     console.error(e)
   }
