@@ -1,5 +1,13 @@
 const db = require('./config.js')
-const { isObjectEmpty } = require("../helpers")
+
+// check if object is empty
+const isObjectEmpty = (obj) => {
+  return Object.values(obj).every(propValue => {
+    if (propValue === null) return true
+    if (Array.isArray(propValue) && propValue.length === 0) return true
+    if (typeof propValue === 'object') return isObjectEmpty(propValue)
+  })
+}
 
 const createPodInstance = (pod) => {
   const buildInstance = createBuildInstance(pod)
@@ -17,6 +25,7 @@ const createPodInstance = (pod) => {
     containers: isObjectEmpty(containerInstance) ? [] : [containerInstance],
   }
 }
+
 
 const createBuildInstance = ({ build_uid, build_source, build_order }) => {
   return {

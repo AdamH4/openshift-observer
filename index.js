@@ -1,8 +1,7 @@
 const express = require('express')
-// const cron = require('node-cron')
 const app = express()
-// const axios = require('axios')
 const DB = require('./database/queries')
+console.log(DB)
 const knex = require('./database/config')
 // const response = require('./example-response.json')
 const { parseAndStoreEntityFromJson } = require("./helpers")
@@ -25,17 +24,6 @@ app.use(function (req, res, next) {
     next();
 })
 
-// initialize cron job on each 30min
-// const refreshingPodsTask = cron.schedule("*/30 * * * *", async () => {
-//     try {
-//         const freshPods = await getFreshPods()
-//         savePods(freshPods)
-//         console.log("---Cron successfuly done---")
-//     } catch (err) {
-//         console.error(err)
-//     }
-// }, { scheduled: false })
-
 /*
  * @api [get] /
  * description: Greeting from server
@@ -47,22 +35,6 @@ app.get('/', function (req, res) {
     res.send("Ahoj")
     // res.sendFile(__dirname + '/public/index.html');
 })
-
-// app.get('/migrate', () => {
-//     knex.migrate
-//         .latest()
-//         .then(res => {
-//             console.log(res)
-//         })
-// })
-
-// app.post('/pod/insert', async (req, res) => {
-//     await DB.insertPod({
-//         name: req.body.name,
-//         oas: JSON.stringify(req.body.oas)
-//     })
-//     res.json(req.body)
-// })
 
 /*
  * @api [get] /pods
@@ -85,16 +57,16 @@ const watchPods = () => {
     kc.loadFromDefault()
     const watch = new k8s.Watch(kc)
     watch.watch('/api/v1/namespaces/monitoring-cluster/pods', { allowWatchBookmarks: true },
-        (type, apiObj, watchObj) => {
+        async (type, apiObj, watchObj) => {
             if (type === 'ADDED') {
                 console.log('new object: ' + apiObj.metadata.name)
-                parseAndStoreEntityFromJson(apiObj, OPERATIONS.INSERT)
+                await parseAndStoreEntityFromJson(apiObj, OPERATIONS.INSERT)
             } else if (type === 'MODIFIED') {
                 console.log('changed object: ' + apiObj.metadata.name)
-                parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
+                await parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
             } else if (type === 'DELETED') {
                 console.log('deleted object: ' + apiObj.metadata.name)
-                parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
+                await parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
             } else if (type === 'BOOKMARK') {
                 console.log(`bookmark: ${watchObj.metadata.resourceVersion}`)
             } else {

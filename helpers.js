@@ -1,8 +1,8 @@
-const DB = require("./database/queries")
 const { DATABASES, OPERATIONS } = require("./database/databaseMapper")
 const axios = require('axios')
 const { validNames, yamlToJson } = require("./utils/openApi")
 const { Octokit } = require('@octokit/rest')
+const DB = require('./database/queries')
 
 // get build repo URL and return it defaults to empty string ("")
 const findBuildRepoURL = (build) => {
@@ -67,14 +67,6 @@ const parseBuild = (build) => {
     }
 }
 
-// check if object is empty
-const isObjectEmpty = (obj) => {
-    return Object.values(obj).every(propValue => {
-        if (propValue === null) return true
-        if (Array.isArray(propValue) && propValue.length === 0) return true
-        if (typeof propValue === 'object') return isObjectEmpty(propValue)
-    })
-}
 
 // parse data from replicaSet
 const parseReplicaSet = (replica) => {
@@ -166,8 +158,6 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
     }
 }
 
-
 module.exports = {
     parseAndStoreEntityFromJson,
-    isObjectEmpty,
 }
