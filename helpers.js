@@ -142,7 +142,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             }
             const waitingInterval = setInterval(async () => {
                 const pod = await DB.getSpecificPod({ name: build.pod_name })[0]
-                if (pods && pods.length) { // pod exists
+                if (pod && pod.length) { // pod exists
                     build.pod_uid = pod.uid
                     const specification = await getBuildOpenApiSpecification(build.build_source)
                     console.log(specification)
