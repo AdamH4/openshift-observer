@@ -126,6 +126,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.updateEntity(ports, DATABASES.PORT, "uid")
                 console.log("Success update")
             } else if (operation === OPERATIONS.DELETE) {
+                await DB.updatePodColumn({ name: pod.pod_name }, { specification: JSON.stringify(pod.specification), build_source: pod.build_source })
                 await DB.deleteEntity({ uid: pod.uid, full_name: pod.full_name }, DATABASES.POD)
                 console.log("Success delete")
             }
