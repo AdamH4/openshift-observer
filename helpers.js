@@ -21,6 +21,7 @@ const findBuildRepoURL = (build) => {
 const getOpenApiFile = async (objects) => {
     for (const item of objects) {
         if (validNames.includes(item.name)) {
+            console.log(item.download_url)
             const response = await axios.get(item.download_url)
             return response.data
         }
