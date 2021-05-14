@@ -137,9 +137,11 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 const pods = await DB.getSpecificPod({ name: build.pod_name })
                 if (pods && pods.length) { // pod exists
                     build.pod_uid = pods[0].uid
-                    const specification = JSON.stringify(await getBuildOpenApiSpecification(build.build_source))
-                    await DB.updatePodColumn({ name: build.pod_name }, { specification: specification, build_source: build.build_source })
-                    console.log("Success spec and source update")
+                    const specification = await getBuildOpenApiSpecification(build.build_source)
+                    if (Object.keys(specification) > 0) {
+                        console.log("updating pod with " + build.build_source)
+                        await DB.updatePodColumn({ name: build.pod_name }, { specification: JSON.stringify(specification), build_source: build.build_source })
+                    }
                     if (operation === OPERATIONS.INSERT) {
                         await DB.insertEntity(build, DATABASES.BUILD)
                         console.log("Success insert")
