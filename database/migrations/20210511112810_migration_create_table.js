@@ -16,7 +16,7 @@ exports.up = function (knex) {
             table.text("uid").primary()
             table.text("full_name")
             table.text("pod_name")
-            table.text("pod_uid").references("uid").inTable("pods")
+            table.text("pod_uid").references("uid").inTable("pods").onDelete("CASCADE")
             table.text("build_source")
             table.integer("build_order")
         })
