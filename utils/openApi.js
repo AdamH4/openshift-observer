@@ -11,6 +11,16 @@ const validNames = [
     "openApi.yml",
     "docs.yaml",
     "docs.yml",
+    "openapi.json",
+    "openapi.json",
+    "Openapi.json",
+    "Openapi.json",
+    "OpenApi.json",
+    "OpenApi.json",
+    "openApi.json",
+    "openApi.json",
+    "docs.json",
+    "docs.json",
 ]
 
 const yamlToJson = (file) => {

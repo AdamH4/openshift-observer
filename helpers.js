@@ -20,7 +20,6 @@ const findBuildRepoURL = (build) => {
 // find openApi in github folder and retrieve it 
 const getOpenApiFile = async (objects) => {
     for (const item of objects) {
-        console.log(item.download_url)
         if (validNames.includes(item.name)) {
             const response = await axios.get(item.download_url)
             return response.data
@@ -43,7 +42,13 @@ const getBuildOpenApiSpecification = async (repoURL) => {
     }
     if (res && res.data && res.data.length) {
         const yamlFile = await getOpenApiFile(res.data)
-        if (yamlFile) return yamlToJson(yamlFile)
+        if (yamlFile) {
+            try {
+                return yamlToJson(yamlFile)
+            } catch (error) {
+                return yamlFile
+            }
+        }
     }
     return {}
 }
@@ -138,6 +143,7 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 if (pods && pods.length) { // pod exists
                     build.pod_uid = pods[0].uid
                     const specification = await getBuildOpenApiSpecification(build.build_source)
+                    console.log(specification)
                     if (Object.keys(specification) > 0) {
                         console.log("updating pod with " + build.build_source)
                         await DB.updatePodColumn({ name: build.pod_name }, { specification: JSON.stringify(specification), build_source: build.build_source })
