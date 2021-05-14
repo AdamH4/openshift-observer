@@ -110,11 +110,11 @@ const getAllPods = async () => {
   }
 }
 
-const updatePodColumn = async (identificator, specification) => {
+const updatePodColumn = async (identificator, updatePayload) => {
   try {
     await db("pods")
       .where(identificator)
-      .update(specification)
+      .update(updatePayload)
   } catch (e) {
     console.error(e)
   }
