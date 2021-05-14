@@ -80,6 +80,7 @@ const parseReplicaSet = (replica) => {
         full_name: replica.metadata.name,
         url: `http://${replica.metadata.labels.app}-${replica.metadata.namespace}.apps-crc.testing`,
         cluster_name: replica.metadata.namespace,
+        build_source: null,
         status_message: replica.status.phase,
         creation_timestamp: replica.metadata.creationTimestamp,
         replicaset_count: 0,
@@ -137,13 +138,11 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 if (pods && pods.length) { // pod exists
                     build.pod_uid = pods[0].uid
                     const specification = JSON.stringify(await getBuildOpenApiSpecification(build.build_source))
-                    await DB.updatePodColumn({ name: build.pod_name }, { specification: specification })
+                    await DB.updatePodColumn({ name: build.pod_name }, { specification: specification, build_source: build.build_source })
                     if (operation === OPERATIONS.INSERT) {
-                        delete build.pod_name
                         await DB.insertEntity(build, DATABASES.BUILD)
                         console.log("Success insert")
                     } else if (operation === OPERATIONS.UPDATE) {
-                        delete build.pod_name
                         await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
                         console.log("Success update")
                     }

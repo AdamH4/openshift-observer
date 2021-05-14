@@ -7,6 +7,7 @@ exports.up = function (knex) {
         table.text("url")
         table.text("cluster_name")
         table.text("status_message")
+        table.text("build_source")
         table.timestamp("creation_timestamp")
         table.integer("replicaset_count")
         table.json("specification")
@@ -14,7 +15,8 @@ exports.up = function (knex) {
         .createTable("builds", table => {
             table.text("uid").primary()
             table.text("full_name")
-            table.text("pod_uid").references("uid").inTable("pods").onDelete("CASCADE")
+            table.text("pod_name")
+            table.text("pod_uid").references("uid").inTable("pods")
             table.text("build_source")
             table.integer("build_order")
         })

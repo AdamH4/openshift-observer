@@ -18,6 +18,7 @@ const createPodInstance = (pod) => {
     url: pod.url,
     clusterName: pod.cluster_name,
     statusMessage: pod.status_message,
+    buildSource: pod.pod_build_source,
     creationDate: pod.creation_timestamp,
     replicasetCount: pod.replicaset_count,
     specification: pod.specification,
@@ -27,10 +28,9 @@ const createPodInstance = (pod) => {
 }
 
 
-const createBuildInstance = ({ build_uid, build_source, build_order }) => {
+const createBuildInstance = ({ build_uid, build_order }) => {
   return {
     uid: build_uid,
-    buildSource: build_source,
     buildOrder: build_order
   }
 }
@@ -85,13 +85,13 @@ const getAllPods = async () => {
         "pods.cluster_name",
         "pods.url",
         "pods.name",
+        "pods.build_source AS pod_build_source",
         "pods.status_message",
         "pods.creation_timestamp",
         "pods.replicaset_count",
         "pods.specification",
         "builds.uid AS build_uid",
         "builds.pod_uid AS build_pod_id",
-        "builds.build_source",
         "builds.build_order",
         "ports.uid AS port_uid",
         "ports.container_uid AS port_container_uid",
