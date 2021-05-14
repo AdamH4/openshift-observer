@@ -125,6 +125,7 @@ const getSpecificPod = async (identificator) => {
     const pod = await db("pods")
       .select("*")
       .where(identificator)
+      .limit(1)
     return pod
   } catch (e) {
     console.error(e)

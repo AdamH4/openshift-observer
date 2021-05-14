@@ -126,7 +126,8 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.updateEntity(ports, DATABASES.PORT, "uid")
                 console.log("Success update")
             } else if (operation === OPERATIONS.DELETE) {
-                await DB.updatePodColumn({ name: pod.pod_name }, { specification: JSON.stringify(pod.specification), build_source: pod.build_source })
+                const oldPod = await DB.getSpecificPod({ uid: pod.uid, full_name: pod.full_name })[0]
+                await DB.updatePodColumn({ name: oldPod.pod_name }, { specification: JSON.stringify(oldPod.specification), build_source: oldPod.build_source })
                 await DB.deleteEntity({ uid: pod.uid, full_name: pod.full_name }, DATABASES.POD)
                 console.log("Success delete")
             }
@@ -140,9 +141,9 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 return
             }
             const waitingInterval = setInterval(async () => {
-                const pods = await DB.getSpecificPod({ name: build.pod_name })
+                const pod = await DB.getSpecificPod({ name: build.pod_name })[0]
                 if (pods && pods.length) { // pod exists
-                    build.pod_uid = pods[0].uid
+                    build.pod_uid = pod.uid
                     const specification = await getBuildOpenApiSpecification(build.build_source)
                     console.log(specification)
                     if (Object.keys(specification).length > 0 || build.build_source) {
