@@ -31,8 +31,7 @@ app.use(function (req, res, next) {
  *     description: Greeting message.
  */
 app.get('/', function (req, res) {
-    res.send("Ahoj")
-    // res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 })
 
 /*
@@ -56,15 +55,12 @@ const watchPods = () => {
     kc.loadFromDefault()
     const watch = new k8s.Watch(kc)
     watch.watch('/api/v1/namespaces/monitoring-cluster/pods', {},
-        async (type, apiObj, watchObj) => {
+        async (type, apiObj, _) => {
             if (type === 'ADDED') {
-                console.log('new object: ' + apiObj.metadata.name)
                 await parseAndStoreEntityFromJson(apiObj, OPERATIONS.INSERT)
             } else if (type === 'MODIFIED') {
-                console.log('changed object: ' + apiObj.metadata.name)
                 await parseAndStoreEntityFromJson(apiObj, OPERATIONS.UPDATE)
             } else if (type === 'DELETED') {
-                console.log('deleted object: ' + apiObj.metadata.name)
                 await parseAndStoreEntityFromJson(apiObj, OPERATIONS.DELETE)
             } else {
                 console.log('unknown type: ' + type)
@@ -88,7 +84,7 @@ app.listen(port, async function () {
     let retries = 5
     while (retries) {
         try {
-            await knex.migrate.rollback()
+            // await knex.migrate.rollback()
             await knex.migrate.latest()
             watchPods()
             break

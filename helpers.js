@@ -119,17 +119,16 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
                 await DB.insertEntity(pod, DATABASES.POD)
                 await DB.insertEntity(containers, DATABASES.CONTAINER)
                 await DB.insertEntity(ports, DATABASES.PORT)
-                console.log("Success insert")
             } else if (operation === OPERATIONS.UPDATE) {
+                delete pod.build_source
+                delete pod.specification
                 await DB.updateEntity(pod, DATABASES.POD, "uid")
                 await DB.updateEntity(containers, DATABASES.CONTAINER, "uid")
                 await DB.updateEntity(ports, DATABASES.PORT, "uid")
-                console.log("Success update")
             } else if (operation === OPERATIONS.DELETE) {
-                const oldPod = await DB.getSpecificPod({ uid: pod.uid, full_name: pod.full_name })[0]
+                const oldPod = (await DB.getSpecificPod({ uid: pod.uid, full_name: pod.full_name }))[0]
                 await DB.updatePodColumn({ name: oldPod.name }, { specification: JSON.stringify(oldPod.specification), build_source: oldPod.build_source })
                 await DB.deleteEntity({ uid: pod.uid, full_name: pod.full_name }, DATABASES.POD)
-                console.log("Success delete")
             }
             break
         case "Build":
@@ -137,25 +136,20 @@ const parseAndStoreEntityFromJson = async (entity, operation) => {
             let retries = 5
             if (operation === OPERATIONS.DELETE) {
                 await DB.deleteEntity({ uid: build.uid, full_name: build.full_name }, DATABASES.BUILD)
-                console.log("Success delete")
                 return
             }
             const waitingInterval = setInterval(async () => {
-                const pod = await DB.getSpecificPod({ name: build.pod_name })[0]
-                if (pod && pod.length) { // pod exists
+                const pod = (await DB.getSpecificPod({ name: build.pod_name }))[0]
+                if (pod) { // pod exists
                     build.pod_uid = pod.uid
                     const specification = await getBuildOpenApiSpecification(build.build_source)
-                    console.log(specification)
-                    if (Object.keys(specification).length > 0 || build.build_source) {
-                        console.log("updating pod with " + build.build_source + " -> " + build.pod_name)
+                    if (Object.keys(specification).length > 0 && build.build_source) {
                         await DB.updatePodColumn({ name: build.pod_name }, { specification: JSON.stringify(specification), build_source: build.build_source })
                     }
                     if (operation === OPERATIONS.INSERT) {
                         await DB.insertEntity(build, DATABASES.BUILD)
-                        console.log("Success insert")
                     } else if (operation === OPERATIONS.UPDATE) {
-                        await DB.updateEntity(build, DATABASES.BUILD, { uid: build.uid })
-                        console.log("Success update")
+                        await DB.updateEntity(build, DATABASES.BUILD, "uid")
                     }
                     clearInterval(waitingInterval)
                 }
