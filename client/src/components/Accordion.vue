@@ -18,8 +18,19 @@
       <transition name="slide">
         <div class="row__detail" v-if="openedSectionIndex === index">
           <h3>Services</h3>
-          <div v-for="(path, index) in item.paths" :key="index" class="pod__path">
-            {{path}}
+          <div v-for="(value, key) in item.specification.paths" :key="key" class="pod__path">
+            {{key}}
+            <div v-for="(route, method) in value" :key="`${key}-${method}`">
+              {{(String(method)).toUpperCase()}} -> {{route.description}}
+            </div>
+          </div>
+          <hr>
+          <h3>Containers</h3>
+          <div v-for="(container, index) in item.containers" :key="index" class="pod__path">
+            {{container.uid}}
+            <div v-for="(value, key) in container.ports" :key="key">
+              {{value.protocol}} @ {{value.port}}
+            </div>
           </div>
         </div>
       </transition>

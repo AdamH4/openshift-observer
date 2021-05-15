@@ -5,21 +5,24 @@
         <div class="dialog__wrapper">
             <div class="dialog__card">
                 <div class="dialog__header">
-                    <h1 >{{ pod.label }}</h1>
+                    <div>
+                        <h1>
+                            {{ pod.label }}
+                        </h1>
+                    </div>
+                    <div v-if="pod.buildSource">
+                        <a class="source__link" target="_blank" :href="pod.buildSource">Repo</a>
+                    </div>
                 </div>
                 <Divider />
                 <div class="dialog__content">
                     <div class="pod__description">
-                        <div class="list__item first__name">
-                            <div class="item__name">Port</div>
-                            <div class="item__value">{{ pod.port}}</div>
-                        </div>
-                        <div class="list__item">
-                            <div class="item__name">Host</div>
-                            <div class="item__value">{{ pod.host}}</div>
-                        </div>
+                        <ListItem label="Cluster" :value="pod.clusterName" />
+                        <ListItem label="Host" :value="pod.url" />
+                        <ListItem label="Cluster" :value="pod.clusterName" />
+                        <ListItem label="Created" :value="(new Date(pod.creationDate)).toLocaleString()" />
                     </div>
-                    <div class="pod__oas">
+                    <div v-if="Object.keys(pod.specification).length" class="pod__oas">
                         <h4>Specification</h4>
                         <div class="oas__specification">
                             <TreeMenu :data="pod.specification"/>
@@ -37,9 +40,10 @@
 <script>
 import TreeMenu from '@/components/TreeMenu'
 import Divider from '@/components/Divider'
+import ListItem from '@/components/ListItem'
 export default {
     components: {
-        Divider, TreeMenu
+        Divider, TreeMenu, ListItem
     },
     props: {
         pod: Object,
@@ -91,33 +95,16 @@ export default {
     }
     .dialog__header{
         margin-bottom: 10px;
-    }
-    .list__item{
-        padding: 6px 0;
-        border-bottom: 1px solid rgb(216, 216, 216);
         display: flex;
-        column-gap: 3em;
-    }
-    .list__item:hover{
-        background-color: rgb(216, 216, 216);
-        opacity: 0.7;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
     .pod__description{
         margin: 15px 0;
     }
     .first__name{
         border-top: 1px solid rgb(216, 216, 216);
-    }
-    .item__name{
-        flex: 1;
-        border-radius: 3px;
-        padding: 5px;
-    }
-    .item__value{
-        display: block;
-        flex: 4;
-        padding: 5px;
-        text-align: end;
     }
     .pod__oas h4 {
         margin: 15px 0;

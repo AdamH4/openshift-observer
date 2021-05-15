@@ -1,29 +1,16 @@
 <template >
     <div id="graph"></div>
-
     <PodDetail :pod="selectedPod" :open="dialog" @closeDialog="dialog = false" />
-
-    <!-- <div v-if="dialog" class="pod__detail" id="podDetail">
-      <div class="detail__content">
-        <div>{{selectedPod.label}}</div>
-        <div>{{selectedPod.host}}</div>
-        <div>{{selectedPod.port}}</div>
-      </div>
-    </div> -->
-    <!-- <Pods :nodes="nodes"/> -->
     <div class="container">
-      <Accordion v-if="accordionItems" :items="accordionItems"/>
+      <Accordion v-if="pods.length" :items="pods"/>
     </div>
 </template>
 
 <script>
-// import Pods from '@/components/Pods'
 import PodDetail from '@/components/PodDetail'
 import Accordion from '@/components/Accordion'
 import { DataSet,Network } from 'vis'
-// import { onMounted, ref } from 'vue'
 import { getCurrentInstance } from 'vue'
-// import testData from '@/assets/test.json'
 
 export default {
   name: 'App',
@@ -45,14 +32,13 @@ export default {
   async mounted(){
       const app = getCurrentInstance()
       const axios = app.appContext.config.globalProperties.axios
-      const response = await axios.get("/pods")
+      const response = await axios.get("http://localhost:8081/pods")
       this.pods = response.data.map(pod =>{
         const label = pod.name
         return {...pod, label}
       })
 
       this.nodes = new DataSet(this.pods)
-      console.log(this.nodes)
 
       const data = {
           nodes: this.nodes,
@@ -70,18 +56,6 @@ export default {
         }
       })
   },
-  computed: {
-    accordionItems(){
-      return this.pods.map(pod => {
-        const paths = pod.specification.paths ? Object.keys(pod.specification?.paths).map(path => path) : []
-        return {
-          name: pod.label,
-          id: pod.id,
-          paths: paths
-        }
-      })
-    }
-  }
 }
 </script>
 <style>

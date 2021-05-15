@@ -75,7 +75,7 @@ const watchPods = () => {
         })
 }
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8081
 
 app.listen(port, async function () {
     // response.items.forEach(item => {
@@ -84,7 +84,7 @@ app.listen(port, async function () {
     let retries = 5
     while (retries) {
         try {
-            // await knex.migrate.rollback()
+            await knex.migrate.rollback()
             await knex.migrate.latest()
             watchPods()
             break
