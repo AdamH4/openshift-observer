@@ -1,6 +1,6 @@
 <template>
     <div  v-if="dialog">
-        <div @click="outerDialogClick()" class="dialog__background" >
+        <div @click="outerDialogClick()" class="dialog__background">
         </div>
         <div class="dialog__wrapper">
             <div class="dialog__card">
@@ -23,8 +23,8 @@
                         <ListItem label="Created" :value="(new Date(pod.creationDate)).toLocaleString()" />
                     </div>
                     <div v-if="Object.keys(pod.specification).length" class="pod__oas">
-                        <h4>Specification</h4>
-                        <div class="oas__specification">
+                        <h2>Specification</h2>
+                        <div>
                             <TreeMenu :data="pod.specification"/>
                         </div>
                     </div>
@@ -67,9 +67,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    
+    $grey: #1a1a1a;
+    $green: #71F695;
+    $textColor: #9d9d9d;
     .dialog__background{
-        background-color: rgba(0,0,0,0.5);
+        background-color: rgba(0,0,0,0.8);
         cursor: pointer;
         height: 100vh;
         left: 0;
@@ -79,17 +81,15 @@ export default {
         z-index: 100;
     }
     .dialog__wrapper{
-        align-items: center;
         display: flex;
         justify-content: center;
         z-index: 100;
     }
     .dialog__card{
-        background-color: white;
-        border-radius: 5px;
+        background-color: $grey;
+        border-radius: 7px;
         padding: 15px;
         position: absolute;
-        box-shadow: 15px 15px #2c3e50;
         z-index: 100;
         min-width: clamp(30%, 30%, 100%);
     }
@@ -99,6 +99,7 @@ export default {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        color: $green;
     }
     .pod__description{
         margin: 15px 0;
@@ -106,13 +107,9 @@ export default {
     .first__name{
         border-top: 1px solid rgb(216, 216, 216);
     }
-    .pod__oas h4 {
+    .pod__oas h2 {
         margin: 15px 0;
-    }
-    .oas__specification{
-        border: 1px solid #cecece;
-        background-color: #fffbdf;
-        border-radius: 3px;
+        color: $textColor;
     }
 
 </style>

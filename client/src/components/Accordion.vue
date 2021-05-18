@@ -11,25 +11,31 @@
         <span>
           {{item.name}}
         </span>
-        <span :class="['section__symbol', openedSectionIndex === index ? 'rotate__element' : '']">
-          &#215;
+        <span v-if="openedSectionIndex === index">
+          <img src="../assets/minus.svg" />
+        </span>
+        <span v-else>
+          <img src="../assets/plus.svg" />
         </span>
       </div>
       <transition name="slide">
         <div class="row__detail" v-if="openedSectionIndex === index">
-          <h3>Services</h3>
-          <div v-for="(value, key) in item.specification.paths" :key="key" class="pod__path">
-            {{key}}
-            <div v-for="(route, method) in value" :key="`${key}-${method}`">
-              {{(String(method)).toUpperCase()}} -> {{route.description}}
+          <div class="detail__section">
+            <h3 class="detail__heading">Services</h3>
+            <div v-for="(value, key) in item.specification.paths" :key="key" class="pod__path">
+              {{key}}
+              <div v-for="(route, method) in value" :key="`${key}-${method}`">
+                {{(String(method)).toUpperCase()}} -> {{route.description}}
+              </div>
             </div>
           </div>
-          <hr>
-          <h3>Containers</h3>
-          <div v-for="(container, index) in item.containers" :key="index" class="pod__path">
-            {{container.uid}}
-            <div v-for="(value, key) in container.ports" :key="key">
-              {{value.protocol}} @ {{value.port}}
+          <div class="detail__section">
+            <h3 class="detail__heading">Containers</h3>
+            <div v-for="(container, index) in item.containers" :key="index" class="pod__path">
+              {{container.uid}}
+              <div v-for="(value, key) in container.ports" :key="key">
+                {{value.protocol}} @ {{value.port}}
+              </div>
             </div>
           </div>
         </div>
@@ -62,62 +68,52 @@ export default {
 </script>
 
 <style lang="scss">
-$red: #e04e50;
-$grey: #eee;
-$radius: 5px;
-$blue: #2c3e50;
+$red: #1c1c1c;
+$grey: #0B0B0B;
 $white: #ffffff;
+$green: #71F695;
+$textColor: #9d9d9d;
 .accordion__header{
-  background-color: $grey;
-  border-radius: $radius;
-  padding: 1.3rem;
+  padding: 2.5rem 1.5rem;
   position: relative;
+  border: 1px solid rgba(255,255,255, 0.1);
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.3rem
 }
 .accordion__header:hover{
   background-color: $red;
-  border-radius: $radius;
-  color: white;
+  color: $white;
   cursor: pointer;
-}
-.section__symbol{
-  font-size: 30px;
-  float:right;
-  height: 35px;
-  position: absolute;
-  right: 30px;
-  text-align: center;
-  top: 19%;
-  transform: rotate(45deg);
-  width: 35px;
-}
-.rotate__element{
-  transform: rotate(0deg);
 }
 .accordion__wrapper{
   display: grid;
-  grid-gap: 10px;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
-
 }
 .row__detail{
-  background-color: $white;
+  background-color: $grey;
   padding: 0.7rem;
   padding: 3rem 1rem;
   border: 2px solid $red;
 }
 .selected__section{
   background-color: $red;
-  color: white;
-  border-radius: $radius;
-  border-bottom-left-radius: 0px !important;
-  border-bottom-right-radius: 0px !important;
+  color: $white;
 }
-
+.detail__heading{
+  color: $green;
+  margin: 10px 0;
+}
+.detail__section{
+  padding: 1rem;
+}
 .pod__path{
   font-weight: bold;
   padding: 5px;
-  color: $blue;
+  color: $textColor;
 }
 
 </style>

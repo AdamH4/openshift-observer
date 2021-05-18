@@ -1,15 +1,15 @@
 <template>
     <div class="tree__item" v-for="(value, key) in directEntries" :key="key">
         <span class="direct__name">
-            {{ key }} 
+            {{ key }} -
         </span>
-        - "<span class="direct__value">{{ value }}</span>"
+        "<span class="direct__value">{{ value }}</span>"
     </div>
     <div class="next__iteration" v-if="Object.keys(compoundEntries).length">
         <div v-for="(value,key,index) in compoundEntries" :key="index">
             <div @click="open[index] = !open[index]" class="parent">
                 <OpeningArrow :open="open[index]" />
-                <span class="parentText">
+                <span :class="[open[index] ? 'white' : 'green']">
                     {{ key }}
                 </span> 
             </div>
@@ -55,9 +55,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$textColor: #0d9328;
+$grey: #9d9d9d;
 .tree__item{
     padding: 5px 0 5px 20px;
+    color: $grey;
 }
 .next__iteration{
     padding-left: 20px;
@@ -69,12 +70,17 @@ $textColor: #0d9328;
     display: flex;
     align-items: center;
 }
+.green {
+    color: #71F695;
+}
+.white{
+    color: #ffffff;
+}
 .direct__name{
-    text-decoration: underline;
-    // color: rgb(247, 138, 138);
+    color: $grey;
     margin-right: 10px;
 }
 .direct__value{
-    color: $textColor;
+    color: #ffffff;
 }
 </style>
