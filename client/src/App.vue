@@ -31,7 +31,6 @@ export default {
       clickToUse: true,
       nodes: {
         shape: "dot",
-        physic: false,
         color: {
           border: "#71F695",
           background: "#000000",
