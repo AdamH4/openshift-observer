@@ -12,10 +12,10 @@
           {{item.name}}
         </span>
         <span v-if="openedSectionIndex === index">
-          <img src="../assets/minus.svg" />
+          <img src="../assets/minus.svg" width="32" height="32"/>
         </span>
         <span v-else>
-          <img src="../assets/plus.svg" />
+          <img src="../assets/plus.svg" width="32" height="32"/>
         </span>
       </div>
       <transition name="slide">
@@ -23,17 +23,19 @@
           <div class="detail__section">
             <h3 class="detail__heading">Services</h3>
             <div v-for="(value, key) in item.specification.paths" :key="key" class="pod__path">
-              {{key}}
-              <div v-for="(route, method) in value" :key="`${key}-${method}`">
-                {{(String(method)).toUpperCase()}} -> {{route.description}}
+              <div class="highlight__name">"{{key}}"</div>
+              <div v-for="(route, method) in value" :key="`${key}-${method}`" class="padding__left">
+                {{(String(method)).toUpperCase()}} : {{route.description}}
               </div>
             </div>
           </div>
           <div class="detail__section">
             <h3 class="detail__heading">Containers</h3>
             <div v-for="(container, index) in item.containers" :key="index" class="pod__path">
-              {{container.uid}}
-              <div v-for="(value, key) in container.ports" :key="key">
+              <div class="highlight__name">
+                {{container.uid}}
+              </div>
+              <div v-for="(value, key) in container.ports" :key="key" class="padding__left">
                 {{value.protocol}} @ {{value.port}}
               </div>
             </div>
@@ -96,7 +98,7 @@ $textColor: #9d9d9d;
 .row__detail{
   background-color: $grey;
   padding: 0.7rem;
-  padding: 3rem 1rem;
+  padding: 1rem;
   border: 2px solid $red;
 }
 .selected__section{
@@ -106,6 +108,7 @@ $textColor: #9d9d9d;
 .detail__heading{
   color: $green;
   margin: 10px 0;
+  font-size: 26px;
 }
 .detail__section{
   padding: 1rem;
@@ -114,6 +117,14 @@ $textColor: #9d9d9d;
   font-weight: bold;
   padding: 5px;
   color: $textColor;
+}
+.highlight__name{
+  font-size: 20px;
+  color: $white;
+  padding: 10px 0;
+}
+.padding__left{
+  padding-left: 15px;
 }
 
 </style>

@@ -110,5 +110,6 @@ export default {
 }
 .accordion__section{
   background-color: #0B0B0B;
+  overflow-y: auto;
 }
 </style>
