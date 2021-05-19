@@ -52,7 +52,12 @@ export default {
   async mounted(){
       const app = getCurrentInstance()
       const axios = app.appContext.config.globalProperties.axios
-      const response = await axios.get("http://localhost:8081/pods")
+      let response
+      try {
+        response = await axios.get("http://localhost:8081/pods")
+      } catch (error) {
+        console.error(error)
+      }
       this.pods = response.data.map(pod =>{
         const label = pod.name
         return {...pod, label}

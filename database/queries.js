@@ -35,10 +35,11 @@ const createBuildInstance = ({ build_uid, build_order }) => {
   }
 }
 
-const createContainerInstance = ({ container_pod_uid, port, port_uid, protocol_name }) => {
+const createContainerInstance = ({ container_pod_uid, port, port_uid, protocol_name, container_name }) => {
   const portInstance = createPortInstance({ port, port_uid, protocol_name })
   return {
     uid: container_pod_uid,
+    name: container_name,
     ports: isObjectEmpty(portInstance) ? [] : [portInstance]
   }
 }

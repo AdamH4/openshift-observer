@@ -33,7 +33,7 @@
             <h3 class="detail__heading">Containers</h3>
             <div v-for="(container, index) in item.containers" :key="index" class="pod__path">
               <div class="highlight__name">
-                {{container.uid}}
+                {{container.name}}
               </div>
               <div v-for="(value, key) in container.ports" :key="key" class="padding__left">
                 {{value.protocol}} @ {{value.port}}
