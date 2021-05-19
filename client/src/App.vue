@@ -30,13 +30,21 @@ export default {
     options: {
       clickToUse: true,
       nodes: {
+        shape: "dot",
+        physic: false,
         color: {
           border: "#71F695",
-          background: "#000000"
+          background: "#000000",
+          highlight: {
+            border: "#ffffff",
+            background: "#000000",
+          }
         },
-        borderWidth: 4,
+        borderWidth: 3,
+        borderWidthSelected: 2,
         font: {
-          color: "#ffffff"
+          color: "#ffffff",
+          size: 20,
         }
       }
     },
@@ -62,10 +70,9 @@ export default {
       network.on("beforeDrawing", (ctx) => {
         const image = new Image()
         image.src = Background
-        const x = (ctx.canvas.width / 2 - image.width)  / 2
-        const y = (ctx.canvas.height / 2 - image.height) / 2
-        console.log(ctx.canvas.width,ctx.canvas.height)
         image.onload = () => {
+          const x = ((ctx.canvas.width / 2) - image.width)  / 2
+          const y = ((ctx.canvas.height / 2) - image.height) / 2
           ctx.drawImage(image, x, y)
         }
       })
