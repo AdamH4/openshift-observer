@@ -62,12 +62,9 @@ export default {
       network.on("beforeDrawing", (ctx) => {
         const image = new Image()
         image.src = Background
-        image.width = 400
-        image.height = 400
-        console.log(image)
-        let {x, y} = network.canvas.canvasViewCenter
-        x = x - ctx.canvas.width / 2
-        y = y - ctx.canvas.height / 2
+        const x = (ctx.canvas.width / 2 - image.width)  / 2
+        const y = (ctx.canvas.height / 2 - image.height) / 2
+        console.log(ctx.canvas.width,ctx.canvas.height)
         image.onload = () => {
           ctx.drawImage(image, x, y)
         }
