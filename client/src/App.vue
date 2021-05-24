@@ -78,8 +78,8 @@ export default {
         const image = new Image()
         image.src = Background
         image.onload = () => {
-          const x = ((ctx.canvas.width / 2) - image.width)  / 2
-          const y = ((ctx.canvas.height / 2) - image.height) / 2
+          const x = ((ctx.canvas.width) - image.width)  / 2
+          const y = ((ctx.canvas.height) - image.height) / 2
           ctx.drawImage(image, x, y)
         }
       })

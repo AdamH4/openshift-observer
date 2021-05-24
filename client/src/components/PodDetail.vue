@@ -21,6 +21,7 @@
                         <ListItem label="Host" :value="pod.url" />
                         <ListItem label="Cluster" :value="pod.clusterName" />
                         <ListItem label="Created" :value="(new Date(pod.creationDate)).toLocaleString()" />
+                        <ListItem label="Status" :value="pod.statusMessage" />
                     </div>
                     <div v-if="Object.keys(pod.specification).length" class="pod__oas">
                         <h2>Specification</h2>
