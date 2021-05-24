@@ -77,22 +77,18 @@ const watchPods = () => {
 const port = process.env.PORT || 8081
 
 app.listen(port, async function () {
-    // response.items.forEach(item => {
-    //     parseAndStoreEntityFromJson(item, OPERATIONS.INSERT)
-    // })
-    // let retries = 5
-    // while (retries) {
-    //     try {
-    //         await knex.migrate.rollback()
-    //         await knex.migrate.latest()
-    //         watchPods()
-    //         break
-    //     } catch (error) {
-    //         retries--
-    //         console.error(error)
-    //         console.log(`Number of retries left: ${retries}`)
-    //         await new Promise(res => setTimeout(res, 5000))
-    //     }
-    // }
+    let retries = 5
+    while (retries) {
+        try {
+            await knex.migrate.latest()
+            watchPods()
+            break
+        } catch (error) {
+            retries--
+            console.error(error)
+            console.log(`Number of retries left: ${retries}`)
+            await new Promise(res => setTimeout(res, 5000))
+        }
+    }
 })
 
