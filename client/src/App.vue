@@ -34,7 +34,7 @@ export default {
       const axios = app.appContext.config.globalProperties.axios
       let response
       try {
-        response = await axios.get("http://localhost:8081/pods")
+        response = await axios.get("/pods")
       } catch (error) {
         console.error(error)
       }
