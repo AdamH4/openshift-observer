@@ -27,26 +27,6 @@ export default {
     pods: [],
     nodes: [],
     edges: [],
-    options: {
-      clickToUse: true,
-      nodes: {
-        shape: "dot",
-        color: {
-          border: "#71F695",
-          background: "#000000",
-          highlight: {
-            border: "#ffffff",
-            background: "#000000",
-          }
-        },
-        borderWidth: 3,
-        borderWidthSelected: 2,
-        font: {
-          color: "#ffffff",
-          size: 20,
-        }
-      }
-    },
   }),
   
   async mounted(){
@@ -65,12 +45,35 @@ export default {
 
       this.nodes = new DataSet(this.pods)
 
+      const options = {
+        clickToUse: true,
+        nodes: {
+          shape: "dot",
+          color: {
+            border: "#71F695",
+            background: "#000000",
+            highlight: {
+              border: "#ffffff",
+              background: "#000000",
+            }
+          },
+          borderWidth: 3,
+          borderWidthSelected: 2,
+          font: {
+            color: "#ffffff",
+            size: 20,
+          }
+        }
+      }
+
       const data = {
           nodes: this.nodes,
           edges: new DataSet(this.edges)
       }
       this.container = document.getElementById('graph')
-      const network = new Network(this.container, data, this.options)
+      const network = new Network(this.container, data, options)
+
+
       network.on("beforeDrawing", (ctx) => {
         const image = new Image()
         image.src = Background

@@ -83,7 +83,7 @@ $textColor: #9d9d9d;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1.3rem
+  font-size: 20px;
 }
 .accordion__header:hover{
   background-color: $red;
@@ -108,7 +108,7 @@ $textColor: #9d9d9d;
 .detail__heading{
   color: $green;
   margin: 10px 0;
-  font-size: 26px;
+  font-size: 20px;
 }
 .detail__section{
   padding: 1rem;
