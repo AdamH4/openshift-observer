@@ -19,7 +19,6 @@
                     <div class="pod__description">
                         <ListItem label="Cluster" :value="pod.clusterName" />
                         <ListItem label="Host" :value="pod.url" />
-                        <ListItem label="Cluster" :value="pod.clusterName" />
                         <ListItem label="Created" :value="(new Date(pod.creationDate)).toLocaleString()" />
                         <ListItem label="Status" :value="pod.statusMessage" />
                     </div>
