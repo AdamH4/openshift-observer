@@ -1,2 +1,2 @@
 # openshift-observer
-Monitoring application for Openshift v3 cluster.
+Monitoring application for Openshift v4 cluster.
